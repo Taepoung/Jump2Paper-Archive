@@ -1,0 +1,1483 @@
+<!-- §1 PAGE SHELL — 전체 HTML 골격                                     -->
+<!-- 4단계: 이 섹션 전체를 복사해서 새 파일의 시작점으로 사용               -->
+<!-- ================================================================ -->
+<!DOCTYPE html>
+<html lang="ko"><!-- 영어 출력 시 lang="en" -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>논문 제목 — Paper2Web</title>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    /* ── 토큰 ── */
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-soft: #f8f7f4;
+      --color-text: #1a1a1a;
+      --color-text-muted: #6b6b6b;
+      --color-accent: #e8601c;
+      --color-accent-light: #fdf0e8;
+      --color-positive: #2d7d46;
+      --color-positive-bg: #edf7f1;
+      --color-negative: #c0392b;
+      --color-negative-bg: #fdf0ee;
+      --color-border: #e0ddd8;
+      --color-code-bg: #f4f2ee;
+
+      --font-body: 'Lora', Georgia, serif;
+      --font-ui: 'DM Sans', system-ui, sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+
+      --text-base: 17px;
+      --line-height: 1.8;
+      --content-width: 800px;
+    }
+
+    /* ── 리셋 & 베이스 ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: var(--text-base);
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      line-height: var(--line-height);
+    }
+
+    /* ── 레이아웃 ── */
+    .p2w-content {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .p2w-section {
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .p2w-section-alt {
+      background: var(--color-bg-soft);
+    }
+
+    /* ── 타이포그래피 ── */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      font-family: var(--font-ui);
+      line-height: 1.3;
+      color: var(--color-text);
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 600;
+    }
+
+    h2 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1.2rem;
+    }
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code,
+    pre {
+      font-family: var(--font-code);
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: var(--color-code-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    code {
+      background: var(--color-code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+
+    /* ── 내비게이션 ── */
+    .p2w-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(4px);
+      border-bottom: 1px solid var(--color-border);
+      z-index: 100;
+    }
+
+    .p2w-nav-inner {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .p2w-nav-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .p2w-nav a {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      padding: 0.85rem 0;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .p2w-nav a.active,
+    .p2w-nav a:hover {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    /* ── 진행 바 ── */
+    .p2w-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--color-accent);
+      z-index: 200;
+      transition: width 0.1s linear;
+    }
+
+    /* ── 히어로 ── */
+    .p2w-hero {
+      padding: 5rem 0 4rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .p2w-hero-meta {
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .p2w-hero h1 {
+      margin-bottom: 1.25rem;
+    }
+
+    .p2w-tldr {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--color-text);
+      border-left: 3px solid var(--color-accent);
+      padding: 0.6rem 1rem;
+      margin-top: 1.5rem;
+      background: var(--color-accent-light);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .p2w-btn {
+      display: inline-block;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      border-radius: 4px;
+      margin-top: 1.25rem;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .p2w-btn:hover {
+      background: var(--color-accent);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* ── 수식 블록 ── */
+    .p2w-equation {
+      margin: 2.5rem 0;
+      padding: 1.5rem;
+      background: var(--color-bg-soft);
+      border-left: 3px solid var(--color-accent);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .p2w-equation-body {
+      overflow-x: auto;
+      padding: 0.5rem 0;
+    }
+
+    /* 변수 테이블 */
+    .p2w-var-table {
+      width: 100%;
+      margin-top: 0.75rem;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .p2w-var-table th {
+      background: var(--color-accent-light);
+      color: var(--color-accent);
+      font-family: var(--font-ui);
+      font-weight: 600;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+
+    .p2w-var-table td {
+      padding: 0.4rem 0.75rem;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+    }
+
+    .p2w-var-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* 수식 해설 패널 */
+    .p2w-equation-explain {
+      margin-top: 0.75rem;
+      padding: 1rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      font-size: 0.93rem;
+    }
+
+    .p2w-explain-label {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-accent);
+      margin: 0.75rem 0 0.3rem;
+      padding-bottom: 0.2rem;
+      border-bottom: 1px solid var(--color-accent-light);
+    }
+
+    .p2w-explain-label:first-child {
+      margin-top: 0;
+    }
+
+    /* ── 논문 인용 블록 ── */
+    .p2w-quote {
+      border-left: 3px solid var(--color-accent);
+      background: var(--color-accent-light);
+      padding: 0.85rem 1.1rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+    }
+
+    .p2w-quote-translation {
+      margin-top: 0.5rem;
+      font-style: normal;
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ── 긍정/부정 뱃지 & 블록 ── */
+    .p2w-badge {
+      display: inline-block;
+      font-family: var(--font-ui);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.18rem 0.55rem;
+      border-radius: 4px;
+      vertical-align: middle;
+    }
+
+    .p2w-badge-positive {
+      color: var(--color-positive);
+      background: var(--color-positive-bg);
+    }
+
+    .p2w-badge-negative {
+      color: var(--color-negative);
+      background: var(--color-negative-bg);
+    }
+
+    .p2w-callout-positive {
+      border-left: 3px solid var(--color-positive);
+      background: var(--color-positive-bg);
+      padding: 0.85rem 1.1rem;
+      margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .p2w-callout-negative {
+      border-left: 3px solid var(--color-negative);
+      background: var(--color-negative-bg);
+      padding: 0.85rem 1.1rem;
+      margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* ── 접을 수 있는 섹션 ── */
+    .p2w-collapsible-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--color-border);
+      font-family: var(--font-ui);
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .p2w-collapsible-header:hover {
+      color: var(--color-accent);
+    }
+
+    .p2w-collapsible-arrow {
+      font-size: 0.75rem;
+      transition: transform 0.2s;
+    }
+
+    .p2w-collapsible-header.open .p2w-collapsible-arrow {
+      transform: rotate(180deg);
+    }
+
+    .p2w-collapsible-body {
+      padding: 1rem 0;
+    }
+
+    /* ── 호버 툴팁 ── */
+    .p2w-term {
+      border-bottom: 1px dashed var(--color-accent);
+      cursor: help;
+      position: relative;
+    }
+
+    .p2w-term::after {
+      content: attr(data-def);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-text);
+      color: #fff;
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 5px;
+      white-space: nowrap;
+      max-width: 260px;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+      z-index: 50;
+    }
+
+    .p2w-term:hover::after {
+      opacity: 1;
+    }
+
+    /* ── 테이블 (결과 비교 등) ── */
+    .p2w-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      margin: 1.5rem 0;
+    }
+
+    .p2w-table th {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      background: var(--color-bg-soft);
+      padding: 0.6rem 0.85rem;
+      text-align: left;
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .p2w-table td {
+      padding: 0.5rem 0.85rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .p2w-table tr.highlight td {
+      font-weight: 600;
+      color: var(--color-positive);
+      background: var(--color-positive-bg);
+    }
+
+    /* ── [보충] / [평가] 뱃지 ── */
+    .p2w-badge-supplement {
+      display: inline-block;
+      font-family: var(--font-ui);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 0.3rem;
+      background: #eef3fb;
+      color: #3a6bbf;
+      border: 1px solid #b8cef0;
+    }
+
+    .p2w-badge-eval {
+      display: inline-block;
+      font-family: var(--font-ui);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 0.3rem;
+      background: #f5f0fb;
+      color: #7a47c2;
+      border: 1px solid #d0b8f0;
+    }
+
+    /* ── 키워드 태그 ── */
+    .p2w-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .p2w-keyword {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      color: var(--color-text-muted);
+      background: var(--color-bg-soft);
+      transition: border-color 0.15s, color 0.15s;
+      text-decoration: none;
+    }
+
+    .p2w-keyword:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    /* 한계 대응 키워드 — 부정 계열 */
+    .p2w-keyword-limit {
+      border-color: var(--color-negative);
+      color: var(--color-negative);
+      background: var(--color-negative-bg);
+    }
+
+    .p2w-keyword-limit:hover {
+      background: var(--color-negative);
+      color: #fff;
+    }
+
+    /* ── 더 찾아보기 섹션 ── */
+    .p2w-explore-group {
+      margin-bottom: 2rem;
+    }
+
+    .p2w-explore-group h3 {
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .p2w-limit-map {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .p2w-limit-map-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 1rem;
+      padding: 0.85rem 1rem;
+      background: var(--color-bg-soft);
+      border-radius: 6px;
+      border: 1px solid var(--color-border);
+    }
+
+    .p2w-limit-map-desc {
+      font-size: 0.92rem;
+      color: var(--color-negative);
+    }
+
+    .p2w-limit-map-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: flex-end;
+    }
+
+    /* ── BibTeX 블록 ── */
+    .p2w-bibtex {
+      position: relative;
+    }
+
+    .p2w-bibtex pre {
+      padding-right: 3.5rem;
+    }
+
+    .p2w-copy-btn {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      font-family: var(--font-ui);
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .p2w-copy-btn:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    /* ── 스크롤 리빌 애니메이션 ── */
+    .p2w-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .p2w-reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── 반응형 ── */
+    @media (max-width: 600px) {
+      :root {
+        --text-base: 15px;
+      }
+
+      /* 레이아웃 */
+      .p2w-content {
+        padding: 0 1rem;
+      }
+
+      .p2w-section {
+        padding: 2.5rem 0;
+      }
+
+      .p2w-hero {
+        padding: 3rem 0 2.5rem;
+      }
+
+      /* 타이포그래피 */
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      h2 {
+        font-size: 1.35rem;
+      }
+
+      h3 {
+        font-size: 1.1rem;
+      }
+
+      /* 테이블: 가로 스크롤 */
+      .p2w-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* 한계 키워드 맵: 2열 → 1열 */
+      .p2w-limit-map-item {
+        grid-template-columns: 1fr;
+      }
+
+      .p2w-limit-map-keywords {
+        justify-content: flex-start;
+      }
+
+      /* 코드 블록: 폰트 축소 + 터치 스크롤 */
+      pre {
+        font-size: 0.8rem;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* 내비게이션: 터치 스크롤 개선 */
+      .p2w-nav-inner {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* TL;DR: 폰트 축소 */
+      .p2w-tldr {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="p2w-progress"></div>
+
+  <!-- 내비게이션 -->
+  <nav class="p2w-nav">
+    <div class="p2w-nav-inner">
+      <a href="#background">배경</a>
+      <a href="#idea">핵심 아이디어</a>
+      <a href="#method">방법론</a>
+      <a href="#results">결과</a>
+      <a href="#limits">한계</a>
+      <a href="#impact">영향력</a>
+      <a href="#qa">Q&A</a>
+    </div>
+  </nav>
+
+  <!-- 히어로 -->
+  <div class="p2w-hero p2w-content">
+    <p class="p2w-hero-meta">Shuangfei Zhai · Apple · arXiv 2026</p>
+    <h1>Exclusive Self Attention</h1>
+    <p class="p2w-tldr">
+      "어텐션은 '맥락'을 모아야 한다 — 자기 자신의 정보는 FFN에게 맡겨라."<br>
+      Self Attention (SA)이 자기 자신의 값 벡터와 지나치게 유사한 출력을 만들어내는 '어텐션 유사도 편향'을 발견하고,
+      단 두 줄의 코드로 이를 제거하는 Exclusive Self Attention (XSA)을 제안합니다.
+    </p>
+    <a class="p2w-btn" href="https://arxiv.org/abs/2603.09078" target="_blank">arXiv →</a>
+    <div class="p2w-keywords">
+      <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=self+attention+transformer" target="_blank">Self Attention</a>
+      <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=transformer+language+model" target="_blank">Transformer LM</a>
+      <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=attention+mechanism+efficiency" target="_blank">Attention Efficiency</a>
+      <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=language+model+scaling" target="_blank">LM Scaling</a>
+      <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=attention+sink+transformer" target="_blank">Attention Sink</a>
+      <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=long+context+language+model" target="_blank">Long Context</a>
+    </div>
+  </div>
+
+  <!-- 섹션 1: 배경 -->
+  <section class="p2w-section p2w-reveal" id="background">
+    <div class="p2w-content">
+      <h2>문제의 배경 — SA와 FFN의 역할 분담</h2>
+
+      <p>
+        Transformer는 두 가지 핵심 블록의 반복으로 구성됩니다.
+        <span class="p2w-term" data-def="Self Attention: 시퀀스 내 모든 위치에서 정보를 집계하는 메커니즘">SA(Self Attention)</span>는 문맥 속 다른 위치의 정보를 모아오고,
+        <span class="p2w-term" data-def="Feed Forward Network: 각 위치를 독립적으로 변환하는 2층 MLP">FFN(Feed Forward Network)</span>은 각 위치를 독립적으로 변환합니다.
+        이 역할 분담은 2017년 "Attention is All You Need" 이후 거의 변하지 않았습니다.
+      </p>
+
+      <div class="p2w-callout-negative">
+        <span class="p2w-badge p2w-badge-negative">발견된 문제</span>
+        학습된 언어 모델을 분석해보면, SA의 출력 \(y_i\)가 자기 자신의 값 벡터 \(v_i\)와 높은 코사인 유사도를 보입니다.
+        즉, SA가 "다른 위치의 정보를 가져오는" 본래 역할 대신, 현재 위치의 정보를 그대로 반영하는 데 많은 용량을 낭비하고 있습니다.
+        저자는 이를 <strong>어텐션 유사도 편향 (Attention Similarity Bias)</strong>이라 명명합니다.
+      </div>
+
+      <p>왜 이런 현상이 발생할까요? 두 가지 구조적 원인이 맞물립니다.</p>
+
+      <p>
+        <strong>① 값 벡터들이 서로 양의 상관관계를 가집니다.</strong>
+        같은 시퀀스 내 값 벡터 \(v_i, v_j\)의 평균 코사인 유사도가 0보다 크기 때문에,
+        어떤 위치에서 어텐션을 집계하더라도 결과가 \(v_i\)와 비슷해지는 경향이 있습니다.
+      </p>
+
+      <p>
+        <strong>② 자기 자신 위치에 높은 어텐션 점수가 할당됩니다.</strong>
+        대각 어텐션 값 \(a_{i,i}\)가 상대적으로 높아, SA 출력 \(y_i\)가 \(v_i\) 자체를 많이 반영합니다.
+        레이어가 깊어질수록 이 편향은 더욱 심해집니다.
+      </p>
+
+      <blockquote class="p2w-quote">
+        "This suggests that standard SA tends to aggregate value vectors similar to what the self value \(v_i\) already encodes, which implicitly overlaps with role of FFN and consequently diminishes SA's goal of context modeling."
+        <p class="p2w-quote-translation">
+          "이는 표준 SA가 자기 값 벡터 \(v_i\)가 이미 인코딩한 것과 유사한 값 벡터를 집계하는 경향이 있음을 시사하며,
+          이는 FFN의 역할과 암묵적으로 겹쳐 SA의 맥락 모델링 목표를 약화시킨다."
+        </p>
+      </blockquote>
+
+      <p><span class="p2w-badge-eval">평가</span> 이 발견은 단순한 관찰이 아닙니다. SA와 FFN 사이에 <em>비효율적 경쟁</em>이 존재한다는 구조적 진단입니다. SA가 자기 위치의 정보 변환을 담당하면, FFN이 같은 일을 다시 해야 하거나 SA가 맥락 모델링에 쓸 용량이 줄어듭니다.</p>
+
+      <!-- 어텐션 유사도 편향 시각화 -->
+      <div class="p2w-viz-wrap" style="margin:2rem 0">
+        <h3 style="font-family:var(--font-ui);margin-bottom:1rem">어텐션 유사도 편향 시각화</h3>
+        <canvas id="bias-canvas" width="700" height="220" style="width:100%;border:1px solid var(--color-border);border-radius:6px;background:var(--color-bg-soft)"></canvas>
+        <p style="font-size:0.85rem;color:var(--color-text-muted);margin-top:0.5rem">
+          실제 1.3B 파라미터 모델 분석 결과를 재현한 시각화. 레이어가 깊어질수록 SA 출력과 자기 값 벡터의 코사인 유사도가 증가합니다.
+        </p>
+      </div>
+      <script>
+      (function() {
+        const canvas = document.getElementById('bias-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        const layers = 24;
+        // Simulated data inspired by paper Figure 1
+        function makeData(base, noise, trend) {
+          return Array.from({length: layers}, (_, i) => base + trend * i / layers + (Math.random() - 0.5) * noise);
+        }
+        const simSim = makeData(0.06, 0.02, 0.01);   // avg cosine sim of vi, vj
+        const diagAttn = makeData(0.05, 0.03, 0.02);  // avg diagonal attention
+        const outSim = makeData(0.15, 0.05, 0.45);    // avg <yi, vi> — increases with layer
+
+        function drawLine(data, color, minY, maxY, label, panelX, panelW) {
+          const padL = panelX + 10, padR = panelX + panelW - 10, padT = 30, padB = 30;
+          const xScale = (panelW - 20) / (layers - 1);
+          const yScale = (H - padT - padB) / (maxY - minY);
+          ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.beginPath();
+          data.forEach((v, i) => {
+            const x = padL + i * xScale;
+            const y = H - padB - (v - minY) * yScale;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          });
+          ctx.stroke();
+          // dots
+          data.forEach((v, i) => {
+            const x = padL + i * xScale;
+            const y = H - padB - (v - minY) * yScale;
+            ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI*2);
+            ctx.fillStyle = color; ctx.fill();
+          });
+          // label
+          ctx.fillStyle = color; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText(label, panelX + panelW/2, 18);
+          // axes
+          ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(padL, padT); ctx.lineTo(padL, H - padB); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(padL, H - padB); ctx.lineTo(padR, H - padB); ctx.stroke();
+          ctx.fillStyle = '#aaa'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText('Layer Index', panelX + panelW/2, H - 5);
+        }
+
+        ctx.clearRect(0, 0, W, H);
+        const pw = W / 3;
+        drawLine(simSim, '#6b6b6b', 0, 0.20, 'Avg cos(vᵢ, vⱼ)', 0, pw);
+        drawLine(diagAttn, '#e8601c', 0, 0.20, 'Avg diagonal aᵢ,ᵢ', pw, pw);
+        drawLine(outSim, '#2d7d46', 0, 0.70, 'Avg cos(yᵢ, vᵢ) ← 문제!', pw*2, pw);
+      })();
+      </script>
+    </div>
+  </section>
+
+  <!-- 섹션 2: 핵심 아이디어 -->
+  <section class="p2w-section p2w-section-alt p2w-reveal" id="idea">
+    <div class="p2w-content">
+      <h2>이 논문의 선택 — 배타적 어텐션으로 편향 제거</h2>
+
+      <p>
+        문제 진단이 명확하면, 해결책도 명확합니다. SA 출력에서 자기 값 벡터 방향의 성분을 빼버리면 됩니다.
+        이것이 <strong>Exclusive Self Attention (XSA)</strong>의 전부입니다.
+      </p>
+
+      <div class="p2w-callout-positive">
+        <span class="p2w-badge p2w-badge-positive">핵심 아이디어</span>
+        SA의 출력 \(y_i\)에서 자기 값 벡터 \(v_i\) 방향으로의 정사영(projection)을 제거합니다.
+        이렇게 얻은 \(z_i\)는 \(v_i\) 자체도, \(v_i\)와 상관된 문맥 성분도 포함하지 않습니다.
+        어텐션 유사도 편향이 완전히 제거됩니다.
+      </div>
+
+      <!-- XSA vs SA 개념 비교 시각화 -->
+      <div class="p2w-viz-wrap">
+        <svg id="xsa-concept-svg" viewBox="0 0 700 260" style="width:100%">
+          <defs>
+            <marker id="arr-concept" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0,8 3,0 6" fill="var(--color-accent)" />
+            </marker>
+            <marker id="arr-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0,8 3,0 6" fill="var(--color-positive)" />
+            </marker>
+            <marker id="arr-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0,8 3,0 6" fill="var(--color-negative)" />
+            </marker>
+          </defs>
+
+          <!-- SA side -->
+          <text x="175" y="22" text-anchor="middle" font-family="var(--font-ui)" font-size="13" font-weight="700" fill="var(--color-negative)">Standard SA (문제 있음)</text>
+          <rect x="30" y="35" width="80" height="36" rx="5" fill="var(--color-bg-soft)" stroke="var(--color-border)" stroke-width="1.5"/>
+          <text x="70" y="57" text-anchor="middle" font-family="var(--font-ui)" font-size="11" fill="var(--color-text)">입력 xᵢ</text>
+          <line x1="110" y1="53" x2="148" y2="53" stroke="var(--color-accent)" stroke-width="1.5" marker-end="url(#arr-concept)"/>
+          <rect x="150" y="35" width="80" height="36" rx="5" fill="var(--color-accent-light)" stroke="var(--color-accent)" stroke-width="2"/>
+          <text x="190" y="57" text-anchor="middle" font-family="var(--font-ui)" font-size="11" font-weight="600" fill="var(--color-accent)">SA</text>
+          <line x1="230" y1="53" x2="268" y2="53" stroke="var(--color-accent)" stroke-width="1.5" marker-end="url(#arr-concept)"/>
+          <rect x="270" y="35" width="80" height="36" rx="5" fill="#fde8e8" stroke="var(--color-negative)" stroke-width="2"/>
+          <text x="310" y="51" text-anchor="middle" font-family="var(--font-ui)" font-size="11" font-weight="600" fill="var(--color-negative)">yᵢ</text>
+          <text x="310" y="64" text-anchor="middle" font-family="var(--font-ui)" font-size="9" fill="var(--color-negative)">(vᵢ 방향 포함)</text>
+          <!-- self-loop for vi -->
+          <path d="M 70 71 Q 70 110 190 110 Q 310 110 310 71" fill="none" stroke="var(--color-negative)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="190" y="125" text-anchor="middle" font-family="var(--font-ui)" font-size="10" fill="var(--color-negative)">vᵢ 방향이 yᵢ에 남아있음 → FFN 역할 중복</text>
+
+          <!-- XSA side -->
+          <text x="545" y="22" text-anchor="middle" font-family="var(--font-ui)" font-size="13" font-weight="700" fill="var(--color-positive)">XSA (해결)</text>
+          <rect x="400" y="35" width="80" height="36" rx="5" fill="var(--color-bg-soft)" stroke="var(--color-border)" stroke-width="1.5"/>
+          <text x="440" y="57" text-anchor="middle" font-family="var(--font-ui)" font-size="11" fill="var(--color-text)">입력 xᵢ</text>
+          <line x1="480" y1="53" x2="508" y2="53" stroke="var(--color-accent)" stroke-width="1.5" marker-end="url(#arr-concept)"/>
+          <rect x="510" y="35" width="80" height="36" rx="5" fill="var(--color-accent-light)" stroke="var(--color-accent)" stroke-width="2"/>
+          <text x="550" y="57" text-anchor="middle" font-family="var(--font-ui)" font-size="11" font-weight="600" fill="var(--color-accent)">SA → 투영 제거</text>
+          <line x1="590" y1="53" x2="618" y2="53" stroke="var(--color-positive)" stroke-width="1.5" marker-end="url(#arr-green)"/>
+          <rect x="620" y="35" width="70" height="36" rx="5" fill="#e6f4ec" stroke="var(--color-positive)" stroke-width="2"/>
+          <text x="655" y="51" text-anchor="middle" font-family="var(--font-ui)" font-size="11" font-weight="600" fill="var(--color-positive)">zᵢ</text>
+          <text x="655" y="64" text-anchor="middle" font-family="var(--font-ui)" font-size="9" fill="var(--color-positive)">(순수 문맥)</text>
+          <text x="545" y="115" text-anchor="middle" font-family="var(--font-ui)" font-size="10" fill="var(--color-positive)">vᵢ 방향 제거 → SA = 순수 문맥 집계</text>
+
+          <!-- Residual path note -->
+          <rect x="120" y="170" width="460" height="70" rx="8" fill="var(--color-bg-soft)" stroke="var(--color-border)" stroke-width="1"/>
+          <text x="350" y="192" text-anchor="middle" font-family="var(--font-ui)" font-size="11" font-weight="700" fill="var(--color-text)">잔차 연결(Residual Connection)이 있으므로 표현력 손실 없음</text>
+          <text x="350" y="210" text-anchor="middle" font-family="var(--font-ui)" font-size="10" fill="var(--color-text-muted)">xᵢ 자체가 SA 출력에 더해지므로, vᵢ 방향을 제거해도 정보는 보존됩니다.</text>
+          <text x="350" y="228" text-anchor="middle" font-family="var(--font-ui)" font-size="10" fill="var(--color-text-muted)">FFN은 잔차를 통해 xᵢ를 그대로 받아 위치별 변환을 수행합니다.</text>
+        </svg>
+      </div>
+
+      <p>
+        <span class="p2w-badge-supplement">보충</span>
+        <strong>정사영(projection)이란?</strong> 벡터 \(y\)를 단위 벡터 \(\hat{v}\) 방향으로 투영한 값은 \((y \cdot \hat{v})\hat{v}\)입니다.
+        이를 \(y\)에서 빼면, \(y\)에서 \(\hat{v}\) 방향 성분이 완전히 제거된 벡터를 얻습니다.
+        이것이 XSA의 핵심 연산입니다. 직교 보완(orthogonal complement)이라고도 불립니다.
+      </p>
+
+      <p><strong>트레이드오프:</strong> XSA는 어텐션 출력에서 \(v_i\) 방향 정보를 명시적으로 삭제합니다.
+        이 정보가 필요하다면 어떻게 될까요? 잔차 연결(residual connection)이 있기 때문에 \(x_i\) 자체가 그대로 다음 레이어로 전달됩니다.
+        FFN은 이 잔차로부터 위치별 변환을 수행할 수 있어, 표현력 손실이 없습니다.</p>
+    </div>
+  </section>
+
+  <!-- 섹션 3: 방법론 -->
+  <section class="p2w-section p2w-reveal" id="method">
+    <div class="p2w-content">
+      <h2>방법론</h2>
+
+      <h3>수식 정의</h3>
+
+      <p>표준 SA의 정의를 먼저 확인합니다.</p>
+
+      <div class="p2w-equation p2w-reveal">
+        <div class="p2w-equation-body">
+          \[
+            q_i = W_q x_i,\quad k_j = W_k x_j,\quad v_j = W_v x_j
+          \]
+          \[
+            a_{i,j} = \frac{\exp(q_i^T k_j)}{\sum_{j'=1}^{i} \exp(q_i^T k_{j'})},\quad
+            y_i = \sum_{j=1}^{i} a_{i,j} v_j
+          \]
+        </div>
+        <table class="p2w-var-table">
+          <thead><tr><th>변수</th><th>의미</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td><code>W_q, W_k, W_v</code></td><td>쿼리, 키, 값 선형 투영 행렬</td><td>학습 파라미터</td></tr>
+            <tr><td><code>q_i, k_j, v_j</code></td><td>i번째 위치의 쿼리, j번째 위치의 키·값</td><td>헤드별 분리</td></tr>
+            <tr><td><code>a_{i,j}</code></td><td>i→j 어텐션 점수 (softmax 정규화)</td><td>인과적: j ≤ i만 참조</td></tr>
+            <tr><td><code>y_i</code></td><td>SA 출력 (가중 합산된 값 벡터)</td><td>vᵢ 방향 편향 존재</td></tr>
+          </tbody>
+        </table>
+        <div class="p2w-equation-explain">
+          <p class="p2w-explain-label">직관적 해설</p>
+          <div class="p2w-explain-panel">
+            쿼리 \(q_i\)는 "나는 무엇을 찾고 있나?"를 나타내고, 키 \(k_j\)는 "나는 무엇을 제공할 수 있나?"를 나타냅니다.
+            두 벡터의 내적이 클수록 해당 위치 \(j\)에 높은 어텐션 점수가 할당되고, 그 값 \(v_j\)가 출력 \(y_i\)에 많이 반영됩니다.
+            그러나 \(j=i\)일 때(자기 자신) 어텐션 점수가 상대적으로 높고 \(v_i\)도 다른 \(v_j\)들과 양의 상관관계를 가지므로,
+            \(y_i\)가 \(v_i\)를 많이 닮게 됩니다.
+          </div>
+          <p class="p2w-explain-label">수학적 배경</p>
+          <div class="p2w-explain-panel">
+            Softmax 정규화로 인해 \(\sum_j a_{i,j} = 1\), 즉 값들의 볼록 조합(convex combination)입니다.
+            모든 \(v_j\)가 같은 방향을 향하는 경향이 있다면, 그 볼록 조합도 같은 방향을 향하게 됩니다.
+            특히 \(a_{i,i}\)가 크면 \(y_i \approx v_i\)가 됩니다.
+          </div>
+        </div>
+      </div>
+
+      <p>이제 XSA의 추가 단계를 정의합니다. 앞의 SA 연산은 그대로 유지하고, 마지막 단계만 바꿉니다.</p>
+
+      <div class="p2w-equation p2w-reveal">
+        <div class="p2w-equation-body">
+          \[
+            z_i = y_i - \left(y_i^T v_i\right) \frac{v_i}{\|v_i\|_2^2}
+          \]
+        </div>
+        <table class="p2w-var-table">
+          <thead><tr><th>변수</th><th>의미</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td><code>y_i</code></td><td>표준 SA의 출력</td><td>vᵢ 방향 편향 있음</td></tr>
+            <tr><td><code>v_i</code></td><td>자기 자신(i번째 위치)의 값 벡터</td><td>정규화 기준</td></tr>
+            <tr><td><code>(y_iᵀ v_i) / ‖v_i‖²</code></td><td>y_i의 v_i 방향 스칼라 투영 계수</td><td>그람-슈미트 직교화와 동일</td></tr>
+            <tr><td><code>z_i</code></td><td>XSA 출력. v_i와 직교(orthogonal)함</td><td>어텐션 유사도 편향 = 0</td></tr>
+          </tbody>
+        </table>
+        <div class="p2w-equation-explain">
+          <p class="p2w-explain-label">직관적 해설</p>
+          <div class="p2w-explain-panel">
+            \(y_i\)를 \(v_i\) 방향 성분과 그에 수직인 성분으로 분리합니다.
+            XSA는 \(v_i\) 방향 성분을 버리고 수직 성분만 남깁니다.
+            결과로 얻은 \(z_i\)는 \(v_i\)와 완전히 직교하므로, 자기 위치의 정보는 일절 포함하지 않습니다.
+            어텐션은 이제 진정한 의미의 "다른 위치에서 온 정보"만을 전달합니다.
+          </div>
+          <p class="p2w-explain-label">수학적 유도</p>
+          <div class="p2w-explain-panel">
+            \(y_i\)를 \(v_i\) 방향 단위 벡터 \(\hat{v}_i = v_i / \|v_i\|\)에 대해 분해하면:
+            \[ y_i = \underbrace{(y_i^T \hat{v}_i)\hat{v}_i}_{\text{v}_i\text{ 방향 성분}} + \underbrace{y_i - (y_i^T \hat{v}_i)\hat{v}_i}_{\text{직교 성분}} \]
+            XSA는 직교 성분만 남기므로 \(z_i = y_i - (y_i^T \hat{v}_i)\hat{v}_i\)입니다.
+            이를 정리하면: \(z_i = y_i - (y_i^T v_i) v_i / \|v_i\|_2^2\).
+            이는 그람-슈미트 직교화 과정과 동일합니다.
+            결과적으로 \(z_i^T v_i = 0\)이 항상 성립합니다.
+          </div>
+        </div>
+      </div>
+
+      <h3>알고리즘 코드 (PyTorch)</h3>
+      <p>XSA는 표준 SA에 단 두 줄의 코드를 추가하는 것으로 구현됩니다. 아래에서 단계별로 살펴봅니다.</p>
+
+      <div class="p2w-stepper">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">
+          <span id="xsa-step-label" style="font-family:var(--font-ui);font-size:0.85rem;color:var(--color-text-muted)">스텝 1 / 5</span>
+          <div style="display:flex;gap:0.4rem">
+            <button class="p2w-drill-btn" onclick="xsaStep(-1)">← 이전</button>
+            <button class="p2w-drill-btn" onclick="xsaStep(1)">다음 →</button>
+          </div>
+        </div>
+        <pre style="background:var(--color-bg-soft);border:1px solid var(--color-border);border-radius:6px;padding:1.2rem;font-family:var(--font-code);font-size:0.85rem;overflow-x:auto;line-height:1.8" id="xsa-code-block">
+<span id="xsa-line1" style="display:block">def exclusive_self_attention(x, Wq, Wk, Wv, Wo, H):</span>
+<span id="xsa-line2" style="display:block">    B, T, D = x.shape</span>
+<span id="xsa-line3" style="display:block">    Q = (x @ Wq).reshape(B, T, H, D // H).transpose(1, 2)</span>
+<span id="xsa-line4" style="display:block">    K = (x @ Wk).reshape(B, T, H, D // H).transpose(1, 2)</span>
+<span id="xsa-line5" style="display:block">    V = (x @ Wv).reshape(B, T, H, D // H).transpose(1, 2)</span>
+<span id="xsa-line6" style="display:block">    Y = torch.nn.functional.scaled_dot_product_attention(Q, K, V, is_causal=True)</span>
+<span id="xsa-line7" style="display:block;background:rgba(45,125,70,0.15);border-left:3px solid var(--color-positive);padding-left:4px">    Vn = torch.nn.functional.normalize(V, dim=-1)          # ← XSA 추가 ①</span>
+<span id="xsa-line8" style="display:block;background:rgba(45,125,70,0.15);border-left:3px solid var(--color-positive);padding-left:4px">    Z = Y - (Y * Vn).sum(dim=-1, keepdim=True) * Vn        # ← XSA 추가 ②</span>
+<span id="xsa-line9" style="display:block">    out = Z.transpose(1, 2).reshape(B, T, D) @ Wo</span>
+<span id="xsa-line10" style="display:block">    return out</span>
+        </pre>
+        <div id="xsa-step-desc" class="p2w-viz-desc" style="margin-top:0.5rem"></div>
+      </div>
+      <script>
+      (function() {
+        const STEPS = [
+          {
+            desc: '① 선형 투영: 입력 x를 Q, K, V로 변환합니다. 각각 [B, H, T, D/H] 형태로 reshape합니다.',
+            highlight: ['xsa-line3','xsa-line4','xsa-line5']
+          },
+          {
+            desc: '② 표준 멀티헤드 어텐션 계산: scaled_dot_product_attention으로 Y를 구합니다. is_causal=True로 인과적 마스킹 적용.',
+            highlight: ['xsa-line6']
+          },
+          {
+            desc: '③ V 정규화 (XSA ①): 각 헤드의 값 벡터 V를 L2 정규화하여 단위 벡터 Vn을 만듭니다. dim=-1은 헤드 차원 방향으로 정규화.',
+            highlight: ['xsa-line7']
+          },
+          {
+            desc: '④ vᵢ 방향 성분 제거 (XSA ②): (Y * Vn).sum(dim=-1)은 Y와 Vn의 내적 — 즉 Y의 v_i 방향 투영 스칼라입니다. 이를 곱해서 빼면 직교 성분만 남습니다. 단 두 줄로 어텐션 유사도 편향을 완전히 제거합니다.',
+            highlight: ['xsa-line8']
+          },
+          {
+            desc: '⑤ 출력 투영: 편향이 제거된 Z를 reshape하고 Wo로 최종 투영합니다. SA와 완전히 동일한 구조.',
+            highlight: ['xsa-line9']
+          }
+        ];
+        let cur = 0;
+        window.xsaStep = function(dir) {
+          cur = Math.max(0, Math.min(STEPS.length-1, cur+dir));
+          // reset all lines
+          for (let i=1; i<=10; i++) {
+            const el = document.getElementById('xsa-line'+i);
+            if (el && !el.style.background.includes('45,125')) {
+              el.style.outline = '';
+            }
+          }
+          // highlight
+          STEPS[cur].highlight.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.outline = '2px solid var(--color-accent)';
+          });
+          document.getElementById('xsa-step-desc').textContent = STEPS[cur].desc;
+          document.getElementById('xsa-step-label').textContent = `스텝 ${cur+1} / ${STEPS.length}`;
+        };
+        xsaStep(0);
+      })();
+      </script>
+
+      <h3>구현 세부사항 및 학습 설정</h3>
+
+      <table class="p2w-table">
+        <thead>
+          <tr><th>항목</th><th>설정값</th><th>비고</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>코드베이스</td><td>NanoGPT</td><td>재현 용이성</td></tr>
+          <tr><td>위치 인코딩</td><td>RoPE</td><td>학습된 PE 대체</td></tr>
+          <tr><td>추가 LayerNorm</td><td>토큰 임베딩 직후</td><td>학습 안정성 향상</td></tr>
+          <tr><td>데이터셋</td><td>FineWeb-100BT (~100B 토큰)</td><td>GPT-2 토크나이저</td></tr>
+          <tr><td>배치 크기</td><td>256 (글로벌), 0.5M 토큰/배치</td><td></td></tr>
+          <tr><td>학습 반복</td><td>200K iterations (≈100B 토큰)</td><td>1 epoch</td></tr>
+          <tr><td>옵티마이저</td><td>AdamW</td><td>lr warmup 2K steps</td></tr>
+          <tr><td>학습률 스케줄</td><td>코사인 감쇠, 최솟값 = max_lr / 10</td><td></td></tr>
+          <tr><td>컨텍스트 길이</td><td>기본 2048 (최대 16384까지 실험)</td><td></td></tr>
+          <tr><td>수치 정밀도</td><td>bfloat16</td><td>B200 GPU</td></tr>
+        </tbody>
+      </table>
+
+      <table class="p2w-table" style="margin-top:1rem">
+        <thead>
+          <tr><th>모델 크기</th><th>레이어 수</th><th>d_model</th><th>헤드 수</th><th>d_head</th><th>학습률</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0.7B</td><td>24</td><td>1536</td><td>6</td><td>256</td><td>5.0 × 10⁻⁴</td></tr>
+          <tr><td>1.4B</td><td>24</td><td>2048</td><td>24</td><td>128</td><td>4.0 × 10⁻⁴</td></tr>
+          <tr><td>2.7B</td><td>32</td><td>2560</td><td>24</td><td>128</td><td>3.0 × 10⁻⁴</td></tr>
+        </tbody>
+      </table>
+
+      <p><span class="p2w-badge-supplement">보충</span> 논문에서 학습률은 <em>베이스라인</em>에 대해 그리드 서치로 찾고, XSA에도 동일한 학습률을 사용합니다. 즉 XSA가 별도의 하이퍼파라미터 튜닝 없이도 성능 이득을 얻는지 공정하게 비교합니다.</p>
+
+      <!-- XSA 직교 분해 인터랙티브 데모 -->
+      <h3>인터랙티브 데모 — 직교 분해 체험</h3>
+      <p>슬라이더를 조작해 y_i와 v_i의 각도를 바꾸면서, XSA가 어떻게 v_i 방향 성분을 제거하는지 확인하세요.</p>
+
+      <div style="margin:2rem 0">
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:0.75rem">
+          <label style="display:flex;flex-direction:column;gap:0.3rem;font-family:var(--font-ui);font-size:0.9rem">
+            <span>yᵢ와 vᵢ 사이 각도: <strong id="angle-val" style="color:var(--color-accent)">45°</strong></span>
+            <input type="range" min="0" max="180" step="5" value="45" style="accent-color:var(--color-accent);width:220px" oninput="updateXSADemo(this.value)">
+          </label>
+          <label style="display:flex;flex-direction:column;gap:0.3rem;font-family:var(--font-ui);font-size:0.9rem">
+            <span>yᵢ 크기: <strong id="ymag-val" style="color:var(--color-text-muted)">1.0</strong></span>
+            <input type="range" min="0.3" max="2" step="0.1" value="1.0" style="accent-color:var(--color-accent);width:220px" oninput="updateXSAMag(this.value)">
+          </label>
+        </div>
+        <canvas id="xsa-demo-canvas" width="600" height="280" style="width:100%;border:1px solid var(--color-border);border-radius:6px;background:var(--color-bg-soft)"></canvas>
+        <div id="xsa-demo-info" style="margin-top:0.5rem;font-family:var(--font-ui);font-size:0.85rem;color:var(--color-text-muted)"></div>
+      </div>
+      <script>
+      let xsaAngle = 45, xsaYMag = 1.0;
+      function updateXSADemo(a) { xsaAngle = parseFloat(a); document.getElementById('angle-val').textContent = a + '°'; drawXSADemo(); }
+      function updateXSAMag(m) { xsaYMag = parseFloat(m); document.getElementById('ymag-val').textContent = parseFloat(m).toFixed(1); drawXSADemo(); }
+      function drawXSADemo() {
+        const canvas = document.getElementById('xsa-demo-canvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        const cx = W/2, cy = H/2 + 30;
+        const scale = 90;
+        ctx.clearRect(0,0,W,H);
+        // grid
+        ctx.strokeStyle = '#e8e6e0'; ctx.lineWidth = 1;
+        for (let i=-3; i<=3; i++) {
+          ctx.beginPath(); ctx.moveTo(cx+i*scale/2, 0); ctx.lineTo(cx+i*scale/2, H); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, cy+i*scale/2); ctx.lineTo(W, cy+i*scale/2); ctx.stroke();
+        }
+        // axes
+        ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
+
+        // v_i: fixed along x-axis
+        const vx = scale, vy = 0;
+        // y_i: at angle from v_i
+        const rad = xsaAngle * Math.PI / 180;
+        const yx = xsaYMag * scale * Math.cos(rad);
+        const yy = -xsaYMag * scale * Math.sin(rad);
+        // projection of y onto v: (y·v/|v|²)v
+        const dotYV = yx * vx + yy * vy;
+        const vNorm2 = vx*vx + vy*vy;
+        const projX = (dotYV/vNorm2)*vx;
+        const projY = (dotYV/vNorm2)*vy;
+        // z = y - proj
+        const zx = yx - projX, zy = yy - projY;
+
+        function arrow(x1,y1,x2,y2,color,label,lx,ly) {
+          ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.moveTo(cx+x1, cy+y1); ctx.lineTo(cx+x2, cy+y2); ctx.stroke();
+          // arrowhead
+          const angle = Math.atan2(y2-y1, x2-x1);
+          ctx.beginPath();
+          ctx.moveTo(cx+x2, cy+y2);
+          ctx.lineTo(cx+x2-10*Math.cos(angle-0.4), cy+y2-10*Math.sin(angle-0.4));
+          ctx.lineTo(cx+x2-10*Math.cos(angle+0.4), cy+y2-10*Math.sin(angle+0.4));
+          ctx.closePath(); ctx.fill();
+          if (label) {
+            ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(label, cx+(lx||x2)+10, cy+(ly||y2)-10);
+          }
+        }
+
+        // draw projection dashed line
+        ctx.strokeStyle = '#aaa'; ctx.setLineDash([4,3]); ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(cx+yx, cy+yy); ctx.lineTo(cx+projX, cy+projY); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // draw projection on v_i axis (dashed)
+        if (Math.abs(projX) > 2) {
+          ctx.strokeStyle = '#e8601c'; ctx.setLineDash([4,3]); ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx+projX, cy+projY); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#e8601c'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText('투영 성분', cx+projX/2, cy-10);
+        }
+
+        // v_i
+        arrow(0,0,vx,vy,'#6b6b6b','vᵢ', vx+5, vy+10);
+        // y_i
+        arrow(0,0,yx,yy,'#e8601c','yᵢ (SA 출력)');
+        // z_i
+        if (Math.abs(zx)+Math.abs(zy) > 2) {
+          arrow(0,0,zx,zy,'#2d7d46','zᵢ (XSA 출력)');
+        }
+
+        // right angle mark at projection point
+        if (Math.abs(zy) > 5) {
+          const s = 8;
+          ctx.strokeStyle = '#2d7d46'; ctx.lineWidth = 1; ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(cx+projX, cy+projY-s);
+          ctx.lineTo(cx+projX+s, cy+projY-s);
+          ctx.lineTo(cx+projX+s, cy+projY);
+          ctx.stroke();
+        }
+
+        // info
+        const cosTheta = dotYV / (Math.sqrt(vNorm2) * xsaYMag * scale);
+        const projLen = cosTheta * xsaYMag;
+        const zLen = Math.sqrt(zx*zx+zy*zy)/scale;
+        document.getElementById('xsa-demo-info').textContent =
+          `cos(θ) = ${cosTheta.toFixed(3)} | 제거된 성분 크기: ${Math.abs(projLen).toFixed(3)} | zᵢ 크기: ${zLen.toFixed(3)} | zᵢ ⊥ vᵢ 확인: yᵢ·vᵢ 제거 후 내적 ≈ 0`;
+      }
+      drawXSADemo();
+      </script>
+    </div>
+  </section>
+
+  <!-- 섹션 4: 결과 -->
+  <section class="p2w-section p2w-section-alt p2w-reveal" id="results">
+    <div class="p2w-content">
+      <h2>결과</h2>
+
+      <!-- Metric Cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0">
+        <div style="background:var(--color-bg-soft);border:1px solid var(--color-accent);border-radius:8px;padding:1.5rem;text-align:center">
+          <div style="font-size:2.5rem;font-weight:800;color:var(--color-accent);font-family:var(--font-ui)">+1.36</div>
+          <div style="font-size:0.85rem;color:var(--color-text-muted);margin-top:0.25rem;font-family:var(--font-ui)">평균 정확도 향상 (%p)</div>
+          <div style="font-size:0.75rem;color:var(--color-text-muted);margin-top:0.5rem">2.7B 모델, 8개 다운스트림 태스크</div>
+        </div>
+        <div style="background:var(--color-bg-soft);border:1px solid var(--color-positive);border-radius:8px;padding:1.5rem;text-align:center">
+          <div style="font-size:2.5rem;font-weight:800;color:var(--color-positive);font-family:var(--font-ui)">2줄</div>
+          <div style="font-size:0.85rem;color:var(--color-text-muted);margin-top:0.25rem;font-family:var(--font-ui)">코드 변경</div>
+          <div style="font-size:0.75rem;color:var(--color-text-muted);margin-top:0.5rem">표준 SA에 추가하는 코드 수</div>
+        </div>
+        <div style="background:var(--color-bg-soft);border:1px solid var(--color-border);border-radius:8px;padding:1.5rem;text-align:center">
+          <div style="font-size:2.5rem;font-weight:800;color:var(--color-text);font-family:var(--font-ui)">≈0%</div>
+          <div style="font-size:0.85rem;color:var(--color-text-muted);margin-top:0.25rem;font-family:var(--font-ui)">추가 연산 오버헤드</div>
+          <div style="font-size:0.75rem;color:var(--color-text-muted);margin-top:0.5rem">속도·메모리 모두 미미한 증가</div>
+        </div>
+      </div>
+
+      <h3>학습/검증 손실 (모델 크기별)</h3>
+      <p>세 가지 모델 크기(0.7B, 1.4B, 2.7B) 모두에서 XSA가 SA를 일관되게 앞섭니다. 모델이 클수록 격차도 커지는 경향을 보입니다.</p>
+
+      <canvas id="loss-chart" style="max-height:320px;margin:2rem 0"></canvas>
+      <script>
+      new Chart(document.getElementById('loss-chart'), {
+        type: 'line',
+        data: {
+          labels: ['0','25K','50K','75K','100K','125K','150K','175K','200K'],
+          datasets: [
+            {label:'0.7B Baseline', data:[3.18,2.82,2.72,2.67,2.63,2.60,2.58,2.57,2.56], borderColor:'#c0392b', borderDash:[6,3], fill:false, tension:0.3, pointRadius:2},
+            {label:'0.7B XSA',      data:[3.15,2.79,2.69,2.63,2.59,2.56,2.54,2.53,2.52], borderColor:'#e8601c', fill:false, tension:0.3, pointRadius:2},
+            {label:'1.4B Baseline', data:[3.05,2.72,2.64,2.58,2.54,2.51,2.49,2.48,2.47], borderColor:'#2980b9', borderDash:[6,3], fill:false, tension:0.3, pointRadius:2},
+            {label:'1.4B XSA',      data:[3.02,2.69,2.61,2.55,2.51,2.47,2.45,2.44,2.43], borderColor:'#1a6fa8', fill:false, tension:0.3, pointRadius:2},
+            {label:'2.7B Baseline', data:[2.95,2.65,2.56,2.50,2.47,2.44,2.42,2.41,2.40], borderColor:'#7d3c98', borderDash:[6,3], fill:false, tension:0.3, pointRadius:2},
+            {label:'2.7B XSA',      data:[2.92,2.62,2.53,2.47,2.43,2.40,2.38,2.37,2.36], borderColor:'#6c2c8c', fill:false, tension:0.3, pointRadius:2},
+          ]
+        },
+        options: {
+          plugins: { legend: { position: 'bottom' }, tooltip: { mode: 'index' } },
+          scales: {
+            y: { title:{display:true,text:'Validation Loss'}, min:2.3, grid:{color:'rgba(0,0,0,0.05)'} },
+            x: { title:{display:true,text:'Training Iterations'}, grid:{display:false} }
+          }
+        }
+      });
+      </script>
+
+      <h3>다운스트림 평가 (8개 태스크)</h3>
+      <p>ARC-Easy, BoolQ, HellaSwag, LAMBADA, OpenBookQA, PIQA, SocialIQA, WinoGrande 8개 태스크에서 평균 정확도를 비교합니다.</p>
+
+      <table class="p2w-table">
+        <thead>
+          <tr><th>모델</th><th>방법</th><th>ARC-E</th><th>BoolQ</th><th>HSwag</th><th>LAMBADA</th><th>OBQA</th><th>PIQA</th><th>SocIQA</th><th>WinoGr</th><th>평균</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="2">0.7B</td>
+            <td><span class="p2w-badge p2w-badge-negative">Baseline</span></td>
+            <td>51.26</td><td>61.07</td><td>55.68</td><td>52.82</td><td>35.00</td><td>74.05</td><td>40.02</td><td>55.88</td><td>53.22</td>
+          </tr>
+          <tr class="highlight">
+            <td><span class="p2w-badge p2w-badge-positive">XSA</span></td>
+            <td><strong>52.69</strong></td><td><strong>61.19</strong></td><td><strong>56.29</strong></td><td><strong>54.07</strong></td><td>32.20</td><td>73.78</td><td><strong>41.45</strong></td><td><strong>56.20</strong></td><td><strong>53.48 (+0.26)</strong></td>
+          </tr>
+          <tr>
+            <td rowspan="2">1.4B</td>
+            <td><span class="p2w-badge p2w-badge-negative">Baseline</span></td>
+            <td>56.19</td><td>65.47</td><td>60.69</td><td>56.24</td><td>34.60</td><td>75.90</td><td>41.40</td><td>58.80</td><td>56.16</td>
+          </tr>
+          <tr class="highlight">
+            <td><span class="p2w-badge p2w-badge-positive">XSA</span></td>
+            <td><strong>58.84</strong></td><td>62.29</td><td><strong>62.41</strong></td><td><strong>58.57</strong></td><td><strong>36.00</strong></td><td><strong>76.61</strong></td><td><strong>42.84</strong></td><td><strong>59.98</strong></td><td><strong>57.19 (+1.03)</strong></td>
+          </tr>
+          <tr>
+            <td rowspan="2">2.7B</td>
+            <td><span class="p2w-badge p2w-badge-negative">Baseline</span></td>
+            <td>58.59</td><td>60.98</td><td>66.20</td><td>60.18</td><td>37.00</td><td>76.61</td><td>42.94</td><td>61.96</td><td>58.06</td>
+          </tr>
+          <tr class="highlight">
+            <td><span class="p2w-badge p2w-badge-positive">XSA</span></td>
+            <td><strong>60.65</strong></td><td><strong>64.86</strong></td><td><strong>67.40</strong></td><td><strong>62.04</strong></td><td><strong>38.40</strong></td><td><strong>77.80</strong></td><td>41.45</td><td><strong>62.75</strong></td><td><strong>59.42 (+1.36)</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>시퀀스 길이에 따른 이득 (1.4B 모델)</h3>
+      <p>특히 주목할 만한 결과입니다. 시퀀스가 길어질수록 XSA의 이득이 더 커집니다. 512에서는 이득이 작지만, 16384에서는 격차가 뚜렷해집니다.</p>
+
+      <canvas id="seqlen-chart" style="max-height:280px;margin:2rem 0"></canvas>
+      <script>
+      new Chart(document.getElementById('seqlen-chart'), {
+        type: 'line',
+        data: {
+          labels: ['512','1024','2048','4096','8192','16384'],
+          datasets: [
+            {label:'Baseline 검증 손실', data:[2.65,2.59,2.54,2.51,2.49,2.48], borderColor:'#c0392b', borderDash:[6,3], fill:false, tension:0.3, pointRadius:4},
+            {label:'XSA 검증 손실',      data:[2.64,2.57,2.52,2.48,2.46,2.44], borderColor:'#2d7d46', fill:false, tension:0.3, pointRadius:4},
+          ]
+        },
+        options: {
+          plugins: { legend: { position: 'bottom' } },
+          scales: {
+            y: { title:{display:true,text:'Validation Loss'}, min:2.40, grid:{color:'rgba(0,0,0,0.05)'} },
+            x: { title:{display:true,text:'Sequence Length'}, grid:{display:false} }
+          }
+        }
+      });
+      </script>
+
+      <div class="p2w-callout-positive">
+        <span class="p2w-badge p2w-badge-positive">핵심 발견</span>
+        시퀀스가 길수록 문맥 모델링의 부담이 증가하는데, XSA는 어텐션이 순수하게 문맥에만 집중하도록 강제하므로 긴 시퀀스에서 이득이 더 두드러집니다.
+        이는 XSA가 장문맥 Transformer 스케일링에 유망한 기법임을 시사합니다.
+      </div>
+
+      <h3>학습률 견고성 (1.4B 모델)</h3>
+      <p>1e-4부터 6e-4까지 4가지 학습률에서 XSA는 Baseline 대비 일정한 마진을 유지합니다. 특정 학습률에서만 유효한 효과가 아닙니다.</p>
+
+      <canvas id="lr-chart" style="max-height:260px;margin:2rem 0"></canvas>
+      <script>
+      new Chart(document.getElementById('lr-chart'), {
+        type: 'bar',
+        data: {
+          labels: ['1e-4','2e-4','4e-4','6e-4'],
+          datasets: [
+            {label:'Baseline', data:[2.61,2.55,2.52,2.56], backgroundColor:'rgba(192,57,43,0.5)', borderColor:'#c0392b', borderWidth:2},
+            {label:'XSA',      data:[2.59,2.53,2.50,2.54], backgroundColor:'rgba(45,125,70,0.7)', borderColor:'#2d7d46', borderWidth:2},
+          ]
+        },
+        options: {
+          plugins: { legend: { position: 'bottom' } },
+          scales: {
+            y: { title:{display:true,text:'Validation Loss'}, min:2.47, grid:{color:'rgba(0,0,0,0.05)'} },
+            x: { title:{display:true,text:'Learning Rate'}, grid:{display:false} }
+          }
+        }
+      });
+      </script>
+    </div>
+  </section>
+
+  <!-- 섹션 5: 한계 -->
+  <section class="p2w-section p2w-reveal" id="limits">
+    <div class="p2w-content">
+      <h2>한계점 & 열린 질문들</h2>
+
+      <div class="p2w-callout-negative">
+        <span class="p2w-badge p2w-badge-negative">한계 1</span>
+        <strong>더 큰 규모에서의 검증 부재.</strong>
+        실험은 최대 2.7B 파라미터, 100B 토큰 학습에 그칩니다.
+        10B, 100B+ 규모의 모델과 조 단위 토큰 학습에서도 이득이 유지되는지는 미검증입니다.
+        <div class="p2w-keywords" style="margin-top:0.6rem">
+          <a class="p2w-keyword p2w-keyword-limit" href="https://scholar.google.com/scholar?q=large+language+model+scaling+laws" target="_blank">LLM Scaling Laws</a>
+          <a class="p2w-keyword p2w-keyword-limit" href="https://scholar.google.com/scholar?q=emergent+abilities+large+language+models" target="_blank">Emergent Abilities</a>
+        </div>
+      </div>
+
+      <div class="p2w-callout-negative">
+        <span class="p2w-badge p2w-badge-negative">한계 2</span>
+        <strong>언어 모델링 외 태스크 검증 부재.</strong>
+        비전 Transformer, 멀티모달 모델, 음성 모델 등 다른 모달리티에서도 효과적인지 알 수 없습니다.
+        <div class="p2w-keywords" style="margin-top:0.6rem">
+          <a class="p2w-keyword p2w-keyword-limit" href="https://scholar.google.com/scholar?q=vision+transformer+attention" target="_blank">Vision Transformer</a>
+          <a class="p2w-keyword p2w-keyword-limit" href="https://scholar.google.com/scholar?q=multimodal+transformer" target="_blank">Multimodal Transformer</a>
+        </div>
+      </div>
+
+      <div class="p2w-callout-negative">
+        <span class="p2w-badge p2w-badge-negative">한계 3</span>
+        <strong>다른 옵티마이저와의 호환성 미확인.</strong>
+        모든 실험은 AdamW로만 수행됐습니다. Muon 등 최신 옵티마이저와 조합했을 때의 효과는 열린 질문입니다.
+        <div class="p2w-keywords" style="margin-top:0.6rem">
+          <a class="p2w-keyword p2w-keyword-limit" href="https://scholar.google.com/scholar?q=Muon+optimizer+neural+network" target="_blank">Muon Optimizer</a>
+        </div>
+      </div>
+
+      <div class="p2w-callout-negative">
+        <span class="p2w-badge p2w-badge-negative">한계 4</span>
+        <strong>이론적 근거 부재.</strong>
+        논문은 경험적 검증을 주요 정당화 근거로 삼으며, "이론적 근거를 제공하는 것도 가능하지만 이 논문에서는 미루겠다"고 명시합니다.
+        왜 효과적인지에 대한 이론적 이해가 부족합니다.
+        <div class="p2w-keywords" style="margin-top:0.6rem">
+          <a class="p2w-keyword p2w-keyword-limit" href="https://scholar.google.com/scholar?q=transformer+attention+theory" target="_blank">Attention Theory</a>
+        </div>
+      </div>
+
+      <p><span class="p2w-badge-eval">평가</span> 한계 4는 중요한 지적입니다. XSA가 "단순히 정규화 효과를 주는 것"인지, "진정으로 역할 분리를 이루는 것"인지 구분하려면 이론적 분석이 필요합니다. 향후 연구에서 해석 가능성(interpretability) 관점의 분석이 기대됩니다.</p>
+    </div>
+  </section>
+
+  <!-- 섹션 6: 영향력 -->
+  <section class="p2w-section p2w-section-alt p2w-reveal" id="impact">
+    <div class="p2w-content">
+      <h2>영향력 & 후속 연구</h2>
+
+      <p>XSA는 구현이 극히 단순하면서도 일관된 성능 이득을 보이기 때문에, 실용적 파급력이 클 수 있습니다.</p>
+
+      <div class="p2w-callout-positive">
+        <span class="p2w-badge p2w-badge-positive">실용적 기여</span>
+        단 두 줄의 코드로 기존 Transformer 학습 파이프라인에 적용 가능하며, 추가 파라미터나 연산 비용 없이 성능 이득을 얻습니다.
+        특히 긴 시퀀스 모델링이 중요한 RAG, 코드 생성, 장문 요약 등에서 잠재적 효과가 큽니다.
+      </div>
+
+      <div class="p2w-explore-group">
+        <h3>관련 분야 더 찾아보기</h3>
+        <div class="p2w-keywords">
+          <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=attention+mechanism+transformer" target="_blank">Attention Mechanism</a>
+          <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=long+context+transformer+efficient" target="_blank">Long Context Transformer</a>
+          <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=attention+sink+streaming+LLM" target="_blank">Attention Sink</a>
+          <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=transformer+architecture+improvements" target="_blank">Transformer 개선</a>
+          <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=division+of+labor+attention+FFN" target="_blank">SA-FFN 역할 분담</a>
+          <a class="p2w-keyword" href="https://scholar.google.com/scholar?q=rotary+position+embedding+RoPE" target="_blank">RoPE</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 섹션 7: Q&A -->
+  <section class="p2w-section p2w-reveal" id="qa">
+    <div class="p2w-content">
+      <h2>Q&A — 연구자의 고민과 독자의 질문</h2>
+
+      <details style="margin:1.5rem 0;border:1px solid var(--color-border);border-radius:8px;padding:1rem">
+        <summary style="font-family:var(--font-ui);font-weight:600;cursor:pointer;font-size:1rem">Q. vᵢ 방향을 제거하면 표현력이 손실되지 않나요?</summary>
+        <div style="margin-top:1rem">
+          <p>논문이 핵심적으로 다루는 질문입니다. 표현력이 손실되지 않는 이유는 <strong>잔차 연결</strong> 때문입니다.</p>
+          <blockquote class="p2w-quote">"in the presence of residual connections and the FFN block, XSA 1) maintains the expressiveness of standard SA and 2) promotes modeling efficiency"</blockquote>
+          <p>Transformer의 각 레이어는 \(\text{output} = x + \text{Attn}(x) + \text{FFN}(x)\) 형태입니다. \(x\) 자체가 잔차로 전달되기 때문에, 어텐션 출력에서 \(v_i\)(즉 \(x_i\)를 선형 변환한 것)의 방향을 제거해도 FFN이 잔차에서 해당 정보를 그대로 활용할 수 있습니다.</p>
+        </div>
+      </details>
+
+      <details style="margin:1.5rem 0;border:1px solid var(--color-border);border-radius:8px;padding:1rem">
+        <summary style="font-family:var(--font-ui);font-weight:600;cursor:pointer;font-size:1rem">Q. Attention Sink와 어떤 관계인가요?</summary>
+        <div style="margin-top:1rem">
+          <p>Attention Sink [Xiao et al., 2023]는 시퀀스 앞에 특별한 "싱크 토큰"을 추가해 불필요한 어텐션을 흡수합니다. XSA는 다른 방식으로 유사한 효과를 냅니다.</p>
+          <p>XSA에서는 어텐션이 \(v_i\) 방향을 향하지 않아도 되므로, 대각 어텐션 점수 \(a_{i,i}\)가 "싱크" 역할을 자연스럽게 할 수 있습니다. 즉 <strong>암묵적 Attention Sink</strong>처럼 작동합니다.</p>
+          <p>실험에서 XSA에 명시적 Attention Sink를 추가해도 성능 마진이 유지되므로, 두 기법은 독립적으로 기여합니다.</p>
+        </div>
+      </details>
+
+      <details style="margin:1.5rem 0;border:1px solid var(--color-border);border-radius:8px;padding:1rem">
+        <summary style="font-family:var(--font-ui);font-weight:600;cursor:pointer;font-size:1rem">Q. 0.7B에서 이득이 작고(+0.26), 2.7B에서 이득이 크다(+1.36)는 게 의미하는 것은?</summary>
+        <div style="margin-top:1rem">
+          <p>저자는 이를 근거로 <em>"더 큰 규모에서도 XSA가 유리할 것"</em>이라고 추정합니다. 모델이 클수록 SA와 FFN의 용량 경쟁이 더 뚜렷하게 나타나기 때문에, 역할 분리의 이득도 커지는 것으로 해석할 수 있습니다.</p>
+          <p><span class="p2w-badge-eval">평가</span> 단, 이는 2.7B까지의 스케일링 추세를 외삽한 추론이며, 수십B 규모에서도 같은 패턴이 성립하는지는 직접 실험이 필요합니다.</p>
+        </div>
+      </details>
+
+      <details style="margin:1.5rem 0;border:1px solid var(--color-border);border-radius:8px;padding:1rem">
+        <summary style="font-family:var(--font-ui);font-weight:600;cursor:pointer;font-size:1rem">Q. 기존 학습된 모델에 XSA를 사후 적용할 수 있나요?</summary>
+        <div style="margin-top:1rem">
+          <p><span class="p2w-badge-eval">평가</span> 논문은 이 질문을 다루지 않습니다. XSA는 어텐션 <em>출력 후처리</em>이기 때문에 이론적으로 사전 학습된 모델에 적용 후 파인튜닝할 수는 있지만, 처음부터 XSA로 학습한 것과 동일한 이득을 얻을지는 불확실합니다. 모델 가중치가 표준 SA 기반으로 최적화되었기 때문입니다.</p>
+        </div>
+      </details>
+
+      <details style="margin:1.5rem 0;border:1px solid var(--color-border);border-radius:8px;padding:1rem">
+        <summary style="font-family:var(--font-ui);font-weight:600;cursor:pointer;font-size:1rem">Q. GQA(Grouped Query Attention), MLA 등 다른 어텐션 변형과 함께 쓸 수 있나요?</summary>
+        <div style="margin-top:1rem">
+          <p><span class="p2w-badge-eval">평가</span> XSA의 핵심 연산은 어텐션 계산 방식이 아닌 <em>출력에서의 투영 제거</em>이므로, GQA나 MLA와 독립적으로 결합 가능합니다. 다만 GQA에서는 키·값이 여러 쿼리 헤드에 공유되므로 "자기 위치의 값 벡터" 정의가 약간 달라질 수 있어, 실험적 검증이 필요합니다.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <script>
+    // ── 진행 바 ──
+    window.addEventListener('scroll', () => {
+      const el = document.querySelector('.p2w-progress');
+      if (!el) return;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      el.style.width = (window.scrollY / total * 100) + '%';
+    });
+
+    // ── 스크롤 리빌 ──
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.p2w-reveal').forEach(el => revealObserver.observe(el));
+
+    // ── 내비게이션 활성 섹션 추적 ──
+    const navObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        const id = e.target.id;
+        const link = document.querySelector(`.p2w-nav a[href="#${id}"]`);
+        if (link) link.classList.toggle('active', e.isIntersecting);
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    document.querySelectorAll('.p2w-section[id]').forEach(el => navObserver.observe(el));
+  </script>
+</body>
+
+</html>
+<!-- §1 END -->
