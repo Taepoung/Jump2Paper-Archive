@@ -80,6 +80,14 @@ def generate_index():
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Paper2Web Archive</title>
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Paper2Web Archive">
+  <meta property="og:description" content="Explore Academic Papers in Professional Web Format. Optimized for readability and accessibility.">
+  <meta property="og:image" content="./.github/images/og-image.png">
+  <meta property="og:site_name" content="Paper2Web Archive">
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap');
 
