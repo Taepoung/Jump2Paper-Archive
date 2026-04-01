@@ -87,6 +87,14 @@
     "p3_tags": "batch, part, animate, data processing, area, capable, arts, patt, digital curation, array, machine learning control, competence, tagging, algebra, education, draw, data management, similarity learning, self-acting, merge, effectiveness, tag, refreshed, aggregate, machine learning, chemistry, identification, fine, code, apparatus, aptitudes, course, refresh, areas",
     "p4_tags": ""
   },
+  "kr/transformers-are-rnns.html": {
+    "title": "Transformers are RNNs:Fast Autoregressive Transformers with Linear Attention",
+    "lang": "kr",
+    "p1_tags": "linear attention, Transformer–RNN 등가성, kernel self-attention, RetNet, 선형 언어 모델, RWKV, causal masking, 커널 어텐션, State Space Models (Mamba), Performer (FAVOR+), Long Range Arena, 효율적 Transformer 서베이, autoregressive inference, efficient transformer",
+    "p2_tags": "Nikolaos Pappas, Apoorv Vyas, Fast Autoregressive Transformers, François Fleuret, Figure Angelos Katharopoulos",
+    "p3_tags": "cover, transform, actors, for, external focus, direction, foot, myopia, amplitude, other-directedness, airbus, deterministic, distance, bilinear, armour, actor, coupling, concavity, bleep, toy, hand, rationalize, artist, covers, outward focus, economic, secondary",
+    "p4_tags": ""
+  },
   "kr/agent-lightning-train-any-ai-agents-with-rl.html": {
     "title": "Agent Lightning: Train ANY AI Agents with Reinforcement Learning",
     "lang": "kr",
