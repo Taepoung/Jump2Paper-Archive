@@ -7,7 +7,7 @@ on:
 
 # 배포 권한 설정
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -28,6 +28,9 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Install dependencies
+        run: pip install yake python-datamuse
+        
       - name: Generate index.html
         run: python .github/scripts/generate_index.py
 
@@ -38,6 +41,12 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: update paper metadata and search index [skip ci]"
+          file_pattern: '.github/papers_metadata.json'
 
   deploy:
     environment:
