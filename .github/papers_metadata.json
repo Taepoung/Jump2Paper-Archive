@@ -1,35 +1,43 @@
 {
-  "kr/agent-lightning-train-any-ai-agents-with-rl.html": {
-    "title": "Agent Lightning: Train ANY AI Agents with Reinforcement Learning",
+  "kr/kvzap-fast-adaptive-faithful-kv-cache-pruning.html": {
+    "title": "KVzap: Fast, Adaptive, and Faithful KV Cache Pruning",
     "lang": "kr",
-    "p1_tags": "multi-turn GRPO, veRL, multi-agent LLM, agent frameworks, DeepSeek-R1, hierarchical RL, MDP formulation, agent training framework, tool-augmented LLM, credit assignment, RL for LLM agents, LLM observability",
-    "p2_tags": "Luna K. Qiu, Zilong Wang, Yuge Zhang, Siyun Zhao, Figure Xufang Luo",
-    "p3_tags": "espalier, axe, ausgabe, management, -est, make, party, dos, managers, officers, arise, solo, assigned, appropriation, says, degree, bachelor, stage, cubic centimeter, assign, -ine, -er, bag, base, akademie",
+    "p1_tags": "LLM inference efficiency, long-context LLM, KV quantization, surrogate model, reasoning efficiency, long-context inference, KV cache pruning, KV cache compression, attention compression, PagedAttention / vLLM, token eviction, FlashAttention, token importance, surrogate distillation",
+    "p2_tags": "Figures Simon Jégou, Figures Simon, cache pruning LLM, Simon Jégou, Maximilian Jeblick",
+    "p3_tags": "adopter, pressure, consideration, abdominoplasty, chain, analogy, tight, pin, mark, simulation modeling, ampere, stress, signal, diet, empirical modelling, rationalize, degree, illation, evacuation, moral, bachelor, rationalizing, network, cubic centimeter, amp, consummate, proxy, demonstrate, ouster, bandwidth, ballpark, high",
     "p4_tags": ""
   },
-  "kr/agentscope-large-scale-simulation.html": {
-    "title": "Very Large-Scale Multi-Agent Simulation in AgentScope",
+  "kr/pivotrl-agentic-post-training.html": {
+    "title": "PivotRL: High Accuracy Agentic Post-Training at\n      Low Compute Cost",
     "lang": "kr",
-    "p1_tags": "AgentScope, Generative Agents, Distributed AI, Game Theory + LLM, Large-Scale Multi-Agent Simulation, Actor Model, ABM + Social Science, LLM Behavioral Simulation, Multi-Agent Simulation, Agent-Based Modeling, LLM Agent Platform, LLM Agent",
-    "p2_tags": "Figures Xuchen Pan, Yuexiang Xie, Dawei Gao, Yushuo Chen",
-    "p3_tags": "perfection, simulations, armature, model, full-scale, civics, economics, grand, theory of games, minimax, between, maximin, alum, balsa, pretend, topped, complex, male, pretense, posing, computability theory, anthropology, eugenics, hermaphrodite, stylist, bailiff, bot, amnesty, tops, model of computation, coinduction, top, broad",
+    "p1_tags": "curriculum learning RL, agentic post-training, BC-to-RL bridge, natural gradient RL, SWE-Bench, SFT catastrophic forgetting, GRPO, RLVR, Nemotron, catastrophic forgetting LLM, reinforcement learning LLM, OOD generalization",
+    "p2_tags": "Compute Cost, Low Compute Cost, High Accuracy Agentic, Baihe Huang, Low Compute",
+    "p3_tags": "actualizing, deepening, digital, anything, filk, arch, sit, discouragement, crazy, inductance, crown, dissuade, head, how, more, bridged, auction, adjustive, affirming, call, not, beyond",
     "p4_tags": ""
   },
-  "kr/automatic-curriculum-learning-for-deep-rl.html": {
-    "title": "Automatic Curriculum LearningFor Deep RL: A Short Survey",
+  "kr/turboquant-online-vector-quantization.html": {
+    "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate",
     "lang": "kr",
-    "p1_tags": "Multi-Goal RL, Intrinsic Motivation, PCG for RL, Sim2Real Transfer, Self-Play, Learning Progress, Automatic Curriculum Learning, Open-Ended Learning, Deep Reinforcement Learning, Intrinsic Motivation Survey, Developmental Robotics, Hindsight Experience Replay",
-    "p2_tags": "Curriculum Learning Deep, Cédric Colas, Learning Deep Reinforcement",
-    "p3_tags": "-aceous, conclusive, allocation, motivation, motive, -ad, isoptin, value, intrinsic reward, 1, multi-agent reinforcement learning, machine learning control, lupin, -age, animatronics, education, deep learning, achievements, age, echo, brain, rote, replaying, assignment, blog, 0, arm, assign, defined, play, thackeray, experience, spin, activity, 1a, axiom",
-    "p4_tags": "Deep Reinforcement Learning, DRL"
+    "p1_tags": "랜덤 회전 양자화, 온라인 양자화, KV cache quantization, vector quantization, online vector quantization, rate-distortion theory, Lloyd-Max 양자기, product quantization, Shannon 왜곡-율 함수, LLM 추론 가속화, Johnson-Lindenstrauss transform, KV cache 압축",
+    "p2_tags": "Near-optimal Distortion Rate, Google Research, Majid Daliri, Majid Hadian",
+    "p3_tags": "vectorially, eire, tape, conceivably, bridge, vectoring, chain, del, reagent, conceptually, ampere, diet, clare, degree, bachelor, network, vectorial, amp, cubic centimeter, divider, alter, actinometer, concept, change, convert, dime",
+    "p4_tags": "PQ, Product Quantization"
   },
-  "kr/born-again-neural-networks.html": {
-    "title": "Born-Again Neural Networks",
+  "kr/think-anywhere-in-code-generation.html": {
+    "title": "Think Anywhere in Code Generation",
     "lang": "kr",
-    "p1_tags": "Label Smoothing, Knowledge Distillation, Dark Knowledge, Knowledge Distillation Survey, Self-Distillation, Online/Mutual Distillation, Born-Again Networks, Model Ensemble Diversity, Teacher-Free Distillation, DenseNet, Model Ensemble, Soft Label Regularization, DenseNet vs ResNet",
-    "p2_tags": "Laurent Itti, Tommaso Furlanello, Michael Tschannen, Anima Anandkumar, Zachary C. Lipton",
-    "p3_tags": "curse, converted, many, prohibition, purview, rectify, rule, bridged, interdiction, lilt, fractionation, iron, variety, essence, bridging, band, benighted, discretization, nemesis, audiometer, forbiddance, regenerate, banded, reduction, most, fark, open, bridge, file, set, against, leap, anglicisation, feature learning, ken, recall, reborn, scourge, redress, agon, agama, reset",
-    "p4_tags": "BAN, BANE, Again Network Ensembles, Again Networks"
+    "p1_tags": "inline reasoning, interleaved thinking, chain-of-thought, code generation LLM, LoRA, RLVR, GRPO, token-level thinking, adaptive computation, code generation, DeepSeek-R1",
+    "p2_tags": "Wenpin Jiao, Taozhi Chen, Mengyang Liu, Figures Xue Jiang, Tianyu Zhang",
+    "p3_tags": "multiplicative, raider, abusive, assumed, argumentation, laura, datum, assume, generating, leigh, calculate, aloud, viewing, mind, guard, programming, computer code, minimum, degeneracy, aaa, base",
+    "p4_tags": ""
+  },
+  "kr/kv-cache-transform-coding-kvtc.html": {
+    "title": "KV Cache Transform Codingfor Compact Storage in LLM Inference",
+    "lang": "kr",
+    "p1_tags": "PCA decorrelation, adaptive quantization, learned transform coding, speculative decoding, transform coding, memory-efficient attention, KV cache compression, PagedAttention / vLLM, entropy coding, prefill-decode disaggregation, KV cache management, DP quantization, low-rank attention, LLM inference",
+    "p2_tags": "Figures Konrad Staniszewski, University of Warsaw, Konrad Staniszewski, Adrian Łańcucki, Figures Konrad",
+    "p3_tags": "rfp, association, allocation, anywhere, hipline, iron, hashing, interpretation, associate degree, account, gauge, associate, bibliomancy, ac, data transformation, chain, breakdown, diet, decomposition, hash, calibration, image compression, amplification, data compression, shannon's source coding theorem, network, design, aware, assistance, shannon coding, pnr, compaction",
+    "p4_tags": ""
   },
   "kr/curriculum-learning-llm-pretraining.html": {
     "title": "Curriculum Learning for LLM Pretraining:An Analysis of Learning Dynamics",
@@ -47,6 +55,22 @@
     "p3_tags": "analytic, intelligent, 190, arts, qualitative, ubc, climax, slot machine, contains, anti-martingale, education, 02, degree, bachelor, 0, aggregate, cubic centimeter, has, one-armed bandit, knowledge, course",
     "p4_tags": ""
   },
+  "kr/born-again-neural-networks.html": {
+    "title": "Born-Again Neural Networks",
+    "lang": "kr",
+    "p1_tags": "Label Smoothing, Knowledge Distillation, Dark Knowledge, Knowledge Distillation Survey, Self-Distillation, Online/Mutual Distillation, Born-Again Networks, Model Ensemble Diversity, Teacher-Free Distillation, DenseNet, Model Ensemble, Soft Label Regularization, DenseNet vs ResNet",
+    "p2_tags": "Laurent Itti, Tommaso Furlanello, Michael Tschannen, Anima Anandkumar, Zachary C. Lipton",
+    "p3_tags": "curse, converted, many, prohibition, purview, rectify, rule, bridged, interdiction, lilt, fractionation, iron, variety, essence, bridging, band, benighted, discretization, nemesis, audiometer, forbiddance, regenerate, banded, reduction, most, fark, open, bridge, file, set, against, leap, anglicisation, feature learning, ken, recall, reborn, scourge, redress, agon, agama, reset",
+    "p4_tags": "BAN, BANE, Again Network Ensembles, Again Networks"
+  },
+  "kr/automatic-curriculum-learning-for-deep-rl.html": {
+    "title": "Automatic Curriculum LearningFor Deep RL: A Short Survey",
+    "lang": "kr",
+    "p1_tags": "Multi-Goal RL, Intrinsic Motivation, PCG for RL, Sim2Real Transfer, Self-Play, Learning Progress, Automatic Curriculum Learning, Open-Ended Learning, Deep Reinforcement Learning, Intrinsic Motivation Survey, Developmental Robotics, Hindsight Experience Replay",
+    "p2_tags": "Curriculum Learning Deep, Cédric Colas, Learning Deep Reinforcement",
+    "p3_tags": "-aceous, conclusive, allocation, motivation, motive, -ad, isoptin, value, intrinsic reward, 1, multi-agent reinforcement learning, machine learning control, lupin, -age, animatronics, education, deep learning, achievements, age, echo, brain, rote, replaying, assignment, blog, 0, arm, assign, defined, play, thackeray, experience, spin, activity, 1a, axiom",
+    "p4_tags": "Deep Reinforcement Learning, DRL"
+  },
   "kr/dynamic-loss-reweighting-llm-pretraining.html": {
     "title": "Dynamic Loss-Based Sample Reweighting for Improved Large Language Model Pretraining",
     "lang": "kr",
@@ -55,76 +79,12 @@
     "p3_tags": "medal, affiliate, cohort, arts, dogedom, interpolated, dogeship, array, duke, trimmed, api, hurt, drive, wok, draw, gag, masterpiece, taxable, gagging, pruner, degree, blanch, bachelor, cubic centimeter, blanched, audiometer, band, graduate, snip, valine, evergreen, code, positive, quadrivium, exit, indentation",
     "p4_tags": ""
   },
-  "kr/exclusive-self-attention.html": {
-    "title": "Exclusive Self Attention",
-    "lang": "kr",
-    "p1_tags": "Attention Mechanism, Long Context, SA-FFN 역할 분담, Attention Sink, Transformer 개선, Transformer LM, Self Attention, Long Context Transformer, RoPE, Attention Efficiency, LM Scaling",
-    "p2_tags": "Shuangfei Zhai, Attention Sink Long, Scaling Attention Sink, Attention \"어텐션은 모아야, Attention",
-    "p3_tags": "unit, lighting, broom, vasodilation, toy, appropriate, hooking, individualism, cultivation, alarm, monitor, cord, leash, immerse, all, daylight, loop, transforming, hook, bleep, set, revival, runs, transformed, transform, obtrude, climate, light",
-    "p4_tags": "SA, Exclusive Self Attention, Self Attention, XSA"
-  },
-  "kr/forward-forward-algorithm.html": {
-    "title": "The Forward-Forward Algorithm:Some Preliminary Investigations",
-    "lang": "kr",
-    "p1_tags": "예측 코딩, Noise Contrastive Estimation, 대조 학습, 역전파 대안, Forward-Forward Algorithm, 뉴로모픽 하드웨어, 생물학적으로 타당한 딥러닝, Mortal Computation, 생물학적 학습, 대조적 헤비안 학습, 로컬 학습 규칙, 아날로그 하드웨어",
-    "p2_tags": "Preliminary Investigations, Google Brain, Preliminary Investigations 역전파(, Figures 한계 영향력, Geoffrey Hinton",
-    "p3_tags": "brain, but then, then again, on the other hand, checksum, calculate, abo system, sorting algorithm, algorithmic",
-    "p4_tags": ""
-  },
-  "kr/kv-cache-transform-coding-kvtc.html": {
-    "title": "KV Cache Transform Codingfor Compact Storage in LLM Inference",
-    "lang": "kr",
-    "p1_tags": "PCA decorrelation, adaptive quantization, learned transform coding, speculative decoding, transform coding, memory-efficient attention, KV cache compression, PagedAttention / vLLM, entropy coding, prefill-decode disaggregation, KV cache management, DP quantization, low-rank attention, LLM inference",
-    "p2_tags": "Figures Konrad Staniszewski, University of Warsaw, Konrad Staniszewski, Adrian Łańcucki, Figures Konrad",
-    "p3_tags": "rfp, association, allocation, anywhere, hipline, iron, hashing, interpretation, associate degree, account, gauge, associate, bibliomancy, ac, data transformation, chain, breakdown, diet, decomposition, hash, calibration, image compression, amplification, data compression, shannon's source coding theorem, network, design, aware, assistance, shannon coding, pnr, compaction",
-    "p4_tags": ""
-  },
-  "kr/kvzap-fast-adaptive-faithful-kv-cache-pruning.html": {
-    "title": "KVzap: Fast, Adaptive, and Faithful KV Cache Pruning",
-    "lang": "kr",
-    "p1_tags": "LLM inference efficiency, long-context LLM, KV quantization, surrogate model, reasoning efficiency, long-context inference, KV cache pruning, KV cache compression, attention compression, PagedAttention / vLLM, token eviction, FlashAttention, token importance, surrogate distillation",
-    "p2_tags": "Figures Simon Jégou, Figures Simon, cache pruning LLM, Simon Jégou, Maximilian Jeblick",
-    "p3_tags": "adopter, pressure, consideration, abdominoplasty, chain, analogy, tight, pin, mark, simulation modeling, ampere, stress, signal, diet, empirical modelling, rationalize, degree, illation, evacuation, moral, bachelor, rationalizing, network, cubic centimeter, amp, consummate, proxy, demonstrate, ouster, bandwidth, ballpark, high",
-    "p4_tags": ""
-  },
   "kr/mamba-linear-time-sequence-modeling.html": {
     "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
     "lang": "kr",
     "p1_tags": "Mamba-2, S4, linear-time sequence modeling, state space model, HyenaDNA, foundation model, linear attention 2024, hardware-aware algorithm, Jamba (하이브리드), efficient RNN, Mamba, FlashAttention, efficient long-context LLM, selective SSM, VMamba (비전)",
     "p2_tags": "Carnegie Mellon, Mellon University, Carnegie Mellon University, SSM, Princeton University",
     "p3_tags": "dendroaspis, capable, figuring, edit, hand, reader, figure, effective, able, direction, genus dendraspis, decal, foot, sorting algorithm, best, canvas, dendraspis, plenum, intermediate, better, checksum, editor, algorithmic, spacetime, crib, cement",
-    "p4_tags": ""
-  },
-  "kr/pivotrl-agentic-post-training.html": {
-    "title": "PivotRL: High Accuracy Agentic Post-Training at\n      Low Compute Cost",
-    "lang": "kr",
-    "p1_tags": "curriculum learning RL, agentic post-training, BC-to-RL bridge, natural gradient RL, SWE-Bench, SFT catastrophic forgetting, GRPO, RLVR, Nemotron, catastrophic forgetting LLM, reinforcement learning LLM, OOD generalization",
-    "p2_tags": "Compute Cost, Low Compute Cost, High Accuracy Agentic, Baihe Huang, Low Compute",
-    "p3_tags": "actualizing, deepening, digital, anything, filk, arch, sit, discouragement, crazy, inductance, crown, dissuade, head, how, more, bridged, auction, adjustive, affirming, call, not, beyond",
-    "p4_tags": ""
-  },
-  "kr/regmix-data-mixture-as-regression.html": {
-    "title": "RegMix: Data Mixture as Regression for Language Model Pre-Training",
-    "lang": "kr",
-    "p1_tags": "pre-training data selection, data mixture, gradient boosting, Dirichlet sampling, proxy model methods, data scaling laws, The Pile, DoReMi, CommonCrawl for LLM, proxy models, data mixture optimization, FineWeb dataset, LightGBM, rank invariance",
-    "p2_tags": "Niklas Muennighoff, Figure Qian Liu, Guangtao Zeng, Xiaosen Zheng, Longxu Dou",
-    "p3_tags": "tensorflow, batch, areola, substitute, cohort, array, bunch, scaler, api, large margin nearest neighbor, scale, alternate, measure, cartesian, draw, proxies, alpha, merge, degree, base, bachelor, aggregate, cubic centimeter, representative, pytorch, equivalence, tile, evergreen, basic, backpropagation through time, code, analog, bandwidth, scikit-learn, right to know, battery, heap, agent, gradient method",
-    "p4_tags": ""
-  },
-  "kr/swin-transformer.html": {
-    "title": "Swin Transformer: Hierarchical Vision Transformer using Shifted Windows",
-    "lang": "kr",
-    "p1_tags": "Hierarchical Vision Transformer, Shifted Window Attention, Semantic Segmentation, Hierarchical Feature Map, Masked Image Modeling, Swin Transformer V2, DINO, ViT Adapter, Multimodal VLM, Video Swin Transformer, Image Classification, ConvNeXt, Vision Transformer, Object Detection Backbone",
-    "p2_tags": "Yixuan Wei, Yutong Lin, Yue Cao, Microsoft Research Asia, Stephen Lin",
-    "p3_tags": "care, isogram, blind, devotion, dinojuice, species, bended, distinctive, swingeing, -ous, table, punctuation mark, laplace operator, dinomania, eyes, molded, passive, bend, heart, double, core, eye, primary, isogloss, address, 0, pretense, -ic, about face, electrotype, coring, synchro, type, punctuation, dino juice, conditions, isoline, abd-el-krim, base",
-    "p4_tags": ""
-  },
-  "kr/think-anywhere-in-code-generation.html": {
-    "title": "Think Anywhere in Code Generation",
-    "lang": "kr",
-    "p1_tags": "inline reasoning, interleaved thinking, chain-of-thought, code generation LLM, LoRA, RLVR, GRPO, token-level thinking, adaptive computation, code generation, DeepSeek-R1",
-    "p2_tags": "Wenpin Jiao, Taozhi Chen, Mengyang Liu, Figures Xue Jiang, Tianyu Zhang",
-    "p3_tags": "multiplicative, raider, abusive, assumed, argumentation, laura, datum, assume, generating, leigh, calculate, aloud, viewing, mind, guard, programming, computer code, minimum, degeneracy, aaa, base",
     "p4_tags": ""
   },
   "kr/TiKMiX_paper2web_ko.html": {
@@ -143,12 +103,52 @@
     "p3_tags": "cover, transform, actors, for, external focus, direction, foot, myopia, amplitude, other-directedness, airbus, deterministic, distance, bilinear, armour, actor, coupling, concavity, bleep, toy, hand, rationalize, artist, covers, outward focus, economic, secondary",
     "p4_tags": ""
   },
-  "kr/turboquant-online-vector-quantization.html": {
-    "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate",
+  "kr/agent-lightning-train-any-ai-agents-with-rl.html": {
+    "title": "Agent Lightning: Train ANY AI Agents with Reinforcement Learning",
     "lang": "kr",
-    "p1_tags": "랜덤 회전 양자화, 온라인 양자화, KV cache quantization, vector quantization, online vector quantization, rate-distortion theory, Lloyd-Max 양자기, product quantization, Shannon 왜곡-율 함수, LLM 추론 가속화, Johnson-Lindenstrauss transform, KV cache 압축",
-    "p2_tags": "Near-optimal Distortion Rate, Google Research, Majid Daliri, Majid Hadian",
-    "p3_tags": "vectorially, eire, tape, conceivably, bridge, vectoring, chain, del, reagent, conceptually, ampere, diet, clare, degree, bachelor, network, vectorial, amp, cubic centimeter, divider, alter, actinometer, concept, change, convert, dime",
-    "p4_tags": "PQ, Product Quantization"
+    "p1_tags": "multi-turn GRPO, veRL, multi-agent LLM, agent frameworks, DeepSeek-R1, hierarchical RL, MDP formulation, agent training framework, tool-augmented LLM, credit assignment, RL for LLM agents, LLM observability",
+    "p2_tags": "Luna K. Qiu, Zilong Wang, Yuge Zhang, Siyun Zhao, Figure Xufang Luo",
+    "p3_tags": "espalier, axe, ausgabe, management, -est, make, party, dos, managers, officers, arise, solo, assigned, appropriation, says, degree, bachelor, stage, cubic centimeter, assign, -ine, -er, bag, base, akademie",
+    "p4_tags": ""
+  },
+  "kr/forward-forward-algorithm.html": {
+    "title": "The Forward-Forward Algorithm:Some Preliminary Investigations",
+    "lang": "kr",
+    "p1_tags": "예측 코딩, Noise Contrastive Estimation, 대조 학습, 역전파 대안, Forward-Forward Algorithm, 뉴로모픽 하드웨어, 생물학적으로 타당한 딥러닝, Mortal Computation, 생물학적 학습, 대조적 헤비안 학습, 로컬 학습 규칙, 아날로그 하드웨어",
+    "p2_tags": "Preliminary Investigations, Google Brain, Preliminary Investigations 역전파(, Figures 한계 영향력, Geoffrey Hinton",
+    "p3_tags": "brain, but then, then again, on the other hand, checksum, calculate, abo system, sorting algorithm, algorithmic",
+    "p4_tags": ""
+  },
+  "kr/exclusive-self-attention.html": {
+    "title": "Exclusive Self Attention",
+    "lang": "kr",
+    "p1_tags": "Attention Mechanism, Long Context, SA-FFN 역할 분담, Attention Sink, Transformer 개선, Transformer LM, Self Attention, Long Context Transformer, RoPE, Attention Efficiency, LM Scaling",
+    "p2_tags": "Shuangfei Zhai, Attention Sink Long, Scaling Attention Sink, Attention \"어텐션은 모아야, Attention",
+    "p3_tags": "unit, lighting, broom, vasodilation, toy, appropriate, hooking, individualism, cultivation, alarm, monitor, cord, leash, immerse, all, daylight, loop, transforming, hook, bleep, set, revival, runs, transformed, transform, obtrude, climate, light",
+    "p4_tags": "SA, Exclusive Self Attention, Self Attention, XSA"
+  },
+  "kr/agentscope-large-scale-simulation.html": {
+    "title": "Very Large-Scale Multi-Agent Simulation in AgentScope",
+    "lang": "kr",
+    "p1_tags": "AgentScope, Generative Agents, Distributed AI, Game Theory + LLM, Large-Scale Multi-Agent Simulation, Actor Model, ABM + Social Science, LLM Behavioral Simulation, Multi-Agent Simulation, Agent-Based Modeling, LLM Agent Platform, LLM Agent",
+    "p2_tags": "Figures Xuchen Pan, Yuexiang Xie, Dawei Gao, Yushuo Chen",
+    "p3_tags": "perfection, simulations, armature, model, full-scale, civics, economics, grand, theory of games, minimax, between, maximin, alum, balsa, pretend, topped, complex, male, pretense, posing, computability theory, anthropology, eugenics, hermaphrodite, stylist, bailiff, bot, amnesty, tops, model of computation, coinduction, top, broad",
+    "p4_tags": ""
+  },
+  "kr/regmix-data-mixture-as-regression.html": {
+    "title": "RegMix: Data Mixture as Regression for Language Model Pre-Training",
+    "lang": "kr",
+    "p1_tags": "pre-training data selection, data mixture, gradient boosting, Dirichlet sampling, proxy model methods, data scaling laws, The Pile, DoReMi, CommonCrawl for LLM, proxy models, data mixture optimization, FineWeb dataset, LightGBM, rank invariance",
+    "p2_tags": "Niklas Muennighoff, Figure Qian Liu, Guangtao Zeng, Xiaosen Zheng, Longxu Dou",
+    "p3_tags": "tensorflow, batch, areola, substitute, cohort, array, bunch, scaler, api, large margin nearest neighbor, scale, alternate, measure, cartesian, draw, proxies, alpha, merge, degree, base, bachelor, aggregate, cubic centimeter, representative, pytorch, equivalence, tile, evergreen, basic, backpropagation through time, code, analog, bandwidth, scikit-learn, right to know, battery, heap, agent, gradient method",
+    "p4_tags": ""
+  },
+  "kr/swin-transformer.html": {
+    "title": "Swin Transformer: Hierarchical Vision Transformer using Shifted Windows",
+    "lang": "kr",
+    "p1_tags": "Hierarchical Vision Transformer, Shifted Window Attention, Semantic Segmentation, Hierarchical Feature Map, Masked Image Modeling, Swin Transformer V2, DINO, ViT Adapter, Multimodal VLM, Video Swin Transformer, Image Classification, ConvNeXt, Vision Transformer, Object Detection Backbone",
+    "p2_tags": "Yixuan Wei, Yutong Lin, Yue Cao, Microsoft Research Asia, Stephen Lin",
+    "p3_tags": "care, isogram, blind, devotion, dinojuice, species, bended, distinctive, swingeing, -ous, table, punctuation mark, laplace operator, dinomania, eyes, molded, passive, bend, heart, double, core, eye, primary, isogloss, address, 0, pretense, -ic, about face, electrotype, coring, synchro, type, punctuation, dino juice, conditions, isoline, abd-el-krim, base",
+    "p4_tags": ""
   }
 }
