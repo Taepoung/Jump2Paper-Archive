@@ -718,27 +718,138 @@ def generate_index():
     let currentPage = 1;
     const pageSize = 10;
 
-    const paperData = cards.map(card => ({
-      el: card,
-      title: card.getAttribute('data-title'),
-      lang: card.getAttribute('data-lang'),
-      p1: card.getAttribute('data-p1'),
-      p2: card.getAttribute('data-p2'),
-      p3: card.getAttribute('data-p3'),
-      p4: card.getAttribute('data-p4')
-    }));
+    const paperData = cards.map(card => {
+      const title = card.getAttribute('data-title') || '';
+      const p1 = card.getAttribute('data-p1') || '';
+      const p2 = card.getAttribute('data-p2') || '';
+      const p3 = card.getAttribute('data-p3') || '';
+      const p4 = card.getAttribute('data-p4') || '';
+
+      return {
+        el: card,
+        title,
+        titleLower: title.toLowerCase(),
+        lang: card.getAttribute('data-lang'),
+        p1,
+        p1Lower: p1.toLowerCase(),
+        p2,
+        p2Lower: p2.toLowerCase(),
+        p3,
+        p3Lower: p3.toLowerCase(),
+        p4,
+        p4Lower: p4.toLowerCase(),
+        combinedLower: [title, p1, p2, p3, p4].join(' ').toLowerCase()
+      };
+    });
 
     const fuse = new Fuse(paperData, {
       keys: [
-        { name: 'title', weight: 2.0 },
-        { name: 'p1', weight: 0.8 },
-        { name: 'p2', weight: 0.5 },
-        { name: 'p3', weight: 0.2 },
-        { name: 'p4', weight: 0.1 }
+        { name: 'title', weight: 3.0 },
+        { name: 'p1', weight: 1.4 },
+        { name: 'p4', weight: 0.8 },
+        { name: 'p2', weight: 0.35 },
+        { name: 'p3', weight: 0.15 }
       ],
-      threshold: 0.3,
-      ignoreLocation: true
+      threshold: 0.28,
+      ignoreLocation: true,
+      includeScore: true
     });
+
+    function tokenizeQuery(query) {
+      return query
+        .split(/\\s+/)
+        .map(token => token.trim())
+        .filter(Boolean);
+    }
+
+    function scorePaper(item, query, tokens, fuseMap) {
+      let score = 0;
+
+      if (item.titleLower === query) score += 1000;
+      if (item.titleLower.startsWith(query)) score += 320;
+      if (item.titleLower.includes(query)) score += 180;
+      if (item.p1Lower.includes(query)) score += 120;
+      if (item.p4Lower.includes(query)) score += 75;
+      if (item.p2Lower.includes(query)) score += 35;
+      if (item.p3Lower.includes(query)) score += 20;
+
+      let matchedTokens = 0;
+
+      tokens.forEach(token => {
+        let tokenMatched = false;
+
+        if (item.titleLower === token) {
+          score += 260;
+          tokenMatched = true;
+        } else if (item.titleLower.startsWith(token)) {
+          score += 130;
+          tokenMatched = true;
+        } else if (item.titleLower.includes(token)) {
+          score += 75;
+          tokenMatched = true;
+        }
+
+        if (item.p1Lower.includes(token)) {
+          score += 48;
+          tokenMatched = true;
+        }
+
+        if (item.p4Lower.includes(token)) {
+          score += 28;
+          tokenMatched = true;
+        }
+
+        if (token.length >= 3 && item.p2Lower.includes(token)) {
+          score += 12;
+          tokenMatched = true;
+        }
+
+        if (token.length >= 4 && item.p3Lower.includes(token)) {
+          score += 6;
+          tokenMatched = true;
+        }
+
+        if (tokenMatched) matchedTokens += 1;
+      });
+
+      if (tokens.length > 1) {
+        score += matchedTokens * 25;
+        if (matchedTokens === tokens.length) score += 140;
+      }
+
+      const fuseScore = fuseMap.get(item);
+      if (fuseScore !== undefined) {
+        score += Math.max(0, 80 - (fuseScore * 120));
+      }
+
+      return score;
+    }
+
+    function searchPapers(items, query) {
+      const tokens = tokenizeQuery(query);
+      const fuseResults = fuse.search(query);
+      const fuseMap = new Map(
+        fuseResults.map(result => [result.item, result.score ?? 1])
+      );
+
+      const ranked = items
+        .map(item => ({
+          item,
+          score: scorePaper(item, query, tokens, fuseMap)
+        }))
+        .filter(entry => {
+          if (entry.score > 0) return true;
+          return tokens.length > 0 && tokens.every(token =>
+            entry.item.combinedLower.includes(token)
+          );
+        })
+        .sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score;
+          return a.item.title.localeCompare(b.item.title);
+        });
+
+      return ranked.map(entry => entry.item);
+    }
 
     function updateView() {
       let results = [];
@@ -748,10 +859,7 @@ def generate_index():
       );
 
       if (currentSearch) {
-        const searchResults = fuse.search(currentSearch);
-        results = searchResults
-          .filter(result => langFiltered.includes(result.item))
-          .map(result => result.item);
+        results = searchPapers(langFiltered, currentSearch);
       } else {
         results = langFiltered;
       }
