@@ -1,6 +1,6 @@
-# 📄 Paper2Web Archive
+# 📄 Jump2Paper archive
 
-![Paper2Web Archive Preview](./.github/images/og-image.png)
+![Jump2Paper archive Preview](./.github/images/og-image.png)
 
 AI 기술을 활용해 학술 논문을 읽기 쉬운 웹 인터페이스(Paper2Web) 포맷으로 변환하여 모아두는 아카이브 저장소입니다.
 
