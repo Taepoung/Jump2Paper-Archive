@@ -362,7 +362,7 @@ def generate_index():
 
   <div class="p2w-hero">
     <div class="p2w-content">
-      <h1>Paper2Web Archive</h1>
+      <h1>Jump2Paper Archive</h1>
       <p>Explore our formatted academic papers.</p>
     </div>
   </div>
