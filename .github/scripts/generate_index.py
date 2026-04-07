@@ -2,132 +2,184 @@ import os
 import re
 import glob
 import json
+from datetime import datetime
+
 import yake
 from datamuse import datamuse
 
 # Initialize YAKE and Datamuse
-kw_extractor = yake.KeywordExtractor(lan="en", n=3, dedupLim=0.9, top=5, features=None)
+kw_extractor = yake.KeywordExtractor(
+    lan="en", n=3, dedupLim=0.9, top=5, features=None
+)
 dm = datamuse.Datamuse()
 
 KNOWN_LANGS = {
-    'kr': 'Korean (KR)',
-    'en': 'English (EN)',
-    'jp': 'Japanese (JP)',
-    'cn': 'Chinese (CN)',
-    'fr': 'French (FR)',
-    'de': 'German (DE)',
-    'es': 'Spanish (ES)'
+    "kr": "Korean (KR)",
+    "en": "English (EN)",
+    "jp": "Japanese (JP)",
+    "cn": "Chinese (CN)",
+    "fr": "French (FR)",
+    "de": "German (DE)",
+    "es": "Spanish (ES)",
 }
-METADATA_FILE = '.github/papers_metadata.json'
+METADATA_FILE = ".github/papers_metadata.json"
+
 
 def get_synonyms(word):
     """Fetches up to 3 synonyms/related terms using the Datamuse API."""
     try:
-        # 'rel_syn' for synonyms, 'rel_ml' for "means like"
         results = dm.words(ml=word, max=3)
-        return [r['word'] for r in results]
-    except:
+        return [r["word"] for r in results]
+    except Exception:
         return []
+
 
 def discover_acronyms(text):
     """Finds patterns like 'Full Name (ABC)' in text and returns synonym pairs."""
     pairs = set()
-    # Pattern: Full Name (ABC)
-    matches = re.finditer(r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s*\(([A-Z]{2,})\)', text)
-    for m in matches:
-        pairs.add((m.group(1).strip(), m.group(2).strip()))
+    matches = re.finditer(
+        r"\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s*\(([A-Z]{2,})\)", text
+    )
+    for match in matches:
+        pairs.add((match.group(1).strip(), match.group(2).strip()))
     return pairs
+
 
 def load_metadata():
     """Loads the persistent metadata file if it exists."""
     if os.path.exists(METADATA_FILE):
         try:
-            with open(METADATA_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except Exception as e:
-            print(f"Warning: Could not load metadata: {e}")
+            with open(METADATA_FILE, "r", encoding="utf-8") as file:
+                return json.load(file)
+        except Exception as exc:
+            print(f"Warning: Could not load metadata: {exc}")
     return {}
+
 
 def save_metadata(metadata):
     """Saves the metadata dictionary back to the JSON file."""
     try:
-        with open(METADATA_FILE, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"Error saving metadata: {e}")
+        with open(METADATA_FILE, "w", encoding="utf-8") as file:
+            json.dump(metadata, file, ensure_ascii=False, indent=2)
+    except Exception as exc:
+        print(f"Error saving metadata: {exc}")
+
 
 def get_html_metadata(filepath, existing_metadata):
-    """Categorizes metadata into prioritized groups (P1: HTML, P2: YAKE, P3: Syns, P4: Acronyms)."""
-    rel_path = os.path.relpath(filepath).replace('\\', '/')
-    
-    # Check if we already have this paper in our metadata cache
+    """Categorizes metadata into prioritized groups."""
+    rel_path = os.path.relpath(filepath).replace("\\", "/")
+
     if rel_path in existing_metadata:
-        m = existing_metadata[rel_path]
-        return m['title'], m.get('p1_tags', ""), m.get('p2_tags', ""), m.get('p3_tags', ""), m.get('p4_tags', "")
+        meta = existing_metadata[rel_path]
+        return (
+            meta["title"],
+            meta.get("p1_tags", ""),
+            meta.get("p2_tags", ""),
+            meta.get("p3_tags", ""),
+            meta.get("p4_tags", ""),
+        )
 
     title = ""
     p1_tags, p2_tags, p3_tags, p4_tags = set(), set(), set(), set()
+
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            full_content = f.read() 
-            
-            # 1. Extract Title
-            match = re.search(r'p2w-hero[^>]*>.*?<h1>(.*?)</h1>', full_content, re.IGNORECASE | re.DOTALL)
+        with open(filepath, "r", encoding="utf-8") as file:
+            full_content = file.read()
+
+        match = re.search(
+            r"p2w-hero[^>]*>.*?<h1>(.*?)</h1>",
+            full_content,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if match:
+            title = re.sub(r"<[^>]+>", "", match.group(1).strip())
+        else:
+            match = re.search(
+                r"<title>(.*?)</title>", full_content, re.IGNORECASE | re.DOTALL
+            )
             if match:
                 title = match.group(1).strip()
-                title = re.sub(r'<[^>]+>', '', title)
-            else:
-                match = re.search(r'<title>(.*?)</title>', full_content, re.IGNORECASE | re.DOTALL)
-                if match:
-                    title = match.group(1).strip()
-            
-            # 2. Priority 1 (P1): Manual Tags from .p2w-keyword elements (HIGHEST PRIORITY)
-            # Use a more robust regex that ignores tag attributes
-            kw_matches = re.findall(r'<a[^>]*class="p2w-keyword"[^>]*>(.*?)</a>', full_content, re.IGNORECASE | re.DOTALL)
-            for kw in kw_matches:
-                kw_text = re.sub(r'<[^>]+>', '', kw).strip()
-                if kw_text:
-                    p1_tags.add(kw_text)
-            
-            # --- CLEAN CONTENT FOR AUTO-PARSING ---
-            # Strip <style> and <script> blocks to remove "var", "solid" etc.
-            clean_body = re.sub(r'<(style|script)[^>]*>.*?</\1>', ' ', full_content, flags=re.DOTALL | re.IGNORECASE)
-            # Strip all other HTML tags
-            clean_text = re.sub(r'<[^>]+>', ' ', clean_body)
-            # Replace multiple spaces/newlines with single space
-            clean_text = ' '.join(clean_text.split())
-            
-            # 3. Priority 2 (P2): YAKE Automatic Keyword Extraction (from Cleaned Body only)
-            # Take first 5000 chars of body for analysis
-            body_text = clean_text[:5000]
-            yake_keywords = kw_extractor.extract_keywords(body_text)
-            for kw, score in yake_keywords:
-                # Avoid adding p1 tags again
-                if kw.lower() not in [t.lower() for t in p1_tags]:
-                    p2_tags.add(kw)
-            
-            # 4. Priority 4 (P4): Self-Learning Acronym Discovery (from Body)
-            acronym_pairs = discover_acronyms(body_text)
-            for full, acro in acronym_pairs:
-                p4_tags.add(full)
-                p4_tags.add(acro)
-                
-            # 5. Priority 3 (P3): Library-Driven Synonym Expansion (via Datamuse)
-            # Expand manual tags AND discovered acronyms
-            to_expand = list(p1_tags) + list(p4_tags)
-            for tag in to_expand:
-                if len(tag) > 2:
-                    syns = get_synonyms(tag)
-                    for s in syns:
-                        if s.lower() not in [t.lower() for t in p1_tags] and s.lower() not in [t.lower() for t in p2_tags]:
-                            p3_tags.add(s)
-                            
-    except Exception as e:
-        print(f"Error reading {filepath}: {e}")
-        
-    if title: title = re.sub(r'<[^>]+>', '', title)
-    if not title: title = os.path.basename(filepath).split('.')[0].replace('-', ' ').title()
-    return title, ", ".join(p1_tags), ", ".join(p2_tags), ", ".join(p3_tags), ", ".join(p4_tags)
+
+        kw_matches = re.findall(
+            r'<a[^>]*class="p2w-keyword"[^>]*>(.*?)</a>',
+            full_content,
+            re.IGNORECASE | re.DOTALL,
+        )
+        for kw in kw_matches:
+            kw_text = re.sub(r"<[^>]+>", "", kw).strip()
+            if kw_text:
+                p1_tags.add(kw_text)
+
+        clean_body = re.sub(
+            r"<(style|script)[^>]*>.*?</\1>",
+            " ",
+            full_content,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        clean_text = re.sub(r"<[^>]+>", " ", clean_body)
+        clean_text = " ".join(clean_text.split())
+
+        body_text = clean_text[:5000]
+        yake_keywords = kw_extractor.extract_keywords(body_text)
+        p1_lower = {tag.lower() for tag in p1_tags}
+
+        for kw, _score in yake_keywords:
+            if kw.lower() not in p1_lower:
+                p2_tags.add(kw)
+
+        acronym_pairs = discover_acronyms(body_text)
+        for full, acro in acronym_pairs:
+            p4_tags.add(full)
+            p4_tags.add(acro)
+
+        p2_lower = {tag.lower() for tag in p2_tags}
+        for tag in list(p1_tags) + list(p4_tags):
+            if len(tag) > 2:
+                for synonym in get_synonyms(tag):
+                    synonym_lower = synonym.lower()
+                    if synonym_lower not in p1_lower and synonym_lower not in p2_lower:
+                        p3_tags.add(synonym)
+
+    except Exception as exc:
+        print(f"Error reading {filepath}: {exc}")
+
+    if title:
+        title = re.sub(r"<[^>]+>", "", title)
+    if not title:
+        title = os.path.basename(filepath).split(".")[0].replace("-", " ").title()
+
+    return (
+        title,
+        ", ".join(sorted(p1_tags)),
+        ", ".join(sorted(p2_tags)),
+        ", ".join(sorted(p3_tags)),
+        ", ".join(sorted(p4_tags)),
+    )
+
+
+def clean_attr(value):
+    return (
+        str(value)
+        .replace("\n", " ")
+        .replace("\r", " ")
+        .replace('"', "&quot;")
+        .strip()
+    )
+
+
+def build_stats_html(total_files, active_langs):
+    stat_items = [
+        ("Records", str(total_files).zfill(3)),
+        ("Languages", str(len(active_langs)).zfill(2)),
+        ("Updated", datetime.now().strftime("%Y.%m.%d")),
+    ]
+    return "\n".join(
+        [
+            f"""        <span class="archive-stat"><span class="archive-stat-label">{label}</span> {value}</span>"""
+            for label, value in stat_items
+        ]
+    )
+
 
 def generate_index():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -137,27 +189,50 @@ def generate_index():
     new_metadata = {}
     all_files = []
     active_langs = set()
-    
-    for entry in os.listdir('.'):
-        if os.path.isdir(entry) and not entry.startswith('.') and entry not in ['node_modules', '__pycache__']:
-            html_files = glob.glob(os.path.join(entry, '*.html'))
+
+    for entry in os.listdir("."):
+        if os.path.isdir(entry) and not entry.startswith(".") and entry not in {
+            "node_modules",
+            "__pycache__",
+        }:
+            html_files = glob.glob(os.path.join(entry, "*.html"))
             if html_files:
                 active_langs.add(entry)
-                for f in html_files:
-                    rel_path = os.path.relpath(f).replace('\\', '/')
-                    title, p1, p2, p3, p4 = get_html_metadata(f, metadata)
-                    paper_entry = { "lang": entry, "path": rel_path, "title": title, "p1": p1, "p2": p2, "p3": p3, "p4": p4 }
+                for filepath in html_files:
+                    rel_path = os.path.relpath(filepath).replace("\\", "/")
+                    title, p1, p2, p3, p4 = get_html_metadata(filepath, metadata)
+                    paper_entry = {
+                        "lang": entry,
+                        "path": rel_path,
+                        "title": title,
+                        "p1": p1,
+                        "p2": p2,
+                        "p3": p3,
+                        "p4": p4,
+                    }
                     all_files.append(paper_entry)
-                    new_metadata[rel_path] = { "title": title, "lang": entry, "p1_tags": p1, "p2_tags": p2, "p3_tags": p3, "p4_tags": p4 }
-                    
+                    new_metadata[rel_path] = {
+                        "title": title,
+                        "lang": entry,
+                        "p1_tags": p1,
+                        "p2_tags": p2,
+                        "p3_tags": p3,
+                        "p4_tags": p4,
+                    }
+
     save_metadata(new_metadata)
-    all_files.sort(key=lambda x: x['title'])
-    active_langs = sorted(list(active_langs))
+    all_files.sort(key=lambda item: item["title"])
+    active_langs = sorted(active_langs)
 
     filters_html = '<button class="filter-btn active" data-lang="all">All</button>\n'
     for lang in active_langs:
         display_name = KNOWN_LANGS.get(lang.lower(), lang.upper())
-        filters_html += f'        <button class="filter-btn" data-lang="{lang}">{display_name}</button>\n'
+        filters_html += (
+            f'        <button class="filter-btn" data-lang="{lang}">'
+            f"{display_name}</button>\n"
+        )
+
+    stats_html = build_stats_html(len(all_files), active_langs)
 
     html_content = f"""<!DOCTYPE html>
 <html lang="ko">
@@ -166,18 +241,16 @@ def generate_index():
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jump2Paper archive</title>
 
-  <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Jump2Paper archive">
   <meta property="og:description" content="Explore Academic Papers in Professional Web Format. Optimized for readability and accessibility.">
   <meta property="og:image" content="./.github/images/og-image.png">
   <meta property="og:site_name" content="Jump2Paper archive">
-  
-  <!-- Fuse.js for Fuzzy Search -->
+
   <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
     :root {{
       --color-bg: #ffffff;
@@ -188,21 +261,28 @@ def generate_index():
       --color-accent-light: #fdf0e8;
       --color-positive: #2d7d46;
       --color-positive-bg: #edf7f1;
-      --color-negative: #c0392b;
-      --color-negative-bg: #fdf0ee;
       --color-border: #e0ddd8;
+      --color-code-bg: #f4f2ee;
 
       --font-body: 'Lora', Georgia, serif;
       --font-ui: 'DM Sans', system-ui, sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
 
       --text-base: 17px;
       --line-height: 1.8;
       --content-width: 800px;
     }}
 
-    *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    *, *::before, *::after {{
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }}
 
-    html {{ font-size: var(--text-base); }}
+    html {{
+      scroll-behavior: smooth;
+      font-size: var(--text-base);
+    }}
 
     body {{
       background: var(--color-bg);
@@ -211,55 +291,150 @@ def generate_index():
       line-height: var(--line-height);
     }}
 
-    .p2w-content {{ max-width: var(--content-width); margin: 0 auto; padding: 0 2rem; }}
+    .p2w-content {{
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }}
 
-    h1, h2, h3, h4, h5 {{ font-family: var(--font-ui); color: var(--color-text); line-height: 1.3; }}
+    h1, h2, h3, h4, h5 {{
+      font-family: var(--font-ui);
+      line-height: 1.3;
+      color: var(--color-text);
+    }}
+
+    h1 {{
+      font-size: 2.4rem;
+      font-weight: 600;
+    }}
+
+    a {{
+      color: var(--color-accent);
+      text-decoration: none;
+    }}
+
+    a:hover {{
+      text-decoration: underline;
+    }}
 
     .p2w-hero {{
-      padding: 5rem 0 3rem;
+      padding: 5rem 0 4rem;
       border-bottom: 1px solid var(--color-border);
+    }}
+
+    .p2w-hero .p2w-content {{
       text-align: center;
     }}
-    .p2w-hero h1 {{ font-size: 2.4rem; font-weight: 600; margin-bottom: 1rem; }}
-    .p2w-hero p {{ color: var(--color-text-muted); font-size: 1.1rem; }}
 
-    /* 검색 및 필터 파트 */
-    .controls-section {{
-      padding: 2rem 0;
-      border-bottom: 1px solid var(--color-border);
-      background: var(--color-bg-soft);
+    .p2w-hero h1 {{
+      margin-bottom: 1.25rem;
     }}
-    .controls-container {{
+
+    .archive-stats {{
       display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
     }}
+
+    .archive-stat {{
+      font-family: var(--font-ui);
+      font-size: 0.84rem;
+      color: var(--color-text-muted);
+    }}
+
+    .archive-stat-label {{
+      font-weight: 600;
+      color: var(--color-text);
+      margin-right: 0.2rem;
+    }}
+
+    .p2w-keywords {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+    }}
+
+    .p2w-keyword {{
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      color: var(--color-text-muted);
+      background: var(--color-bg);
+    }}
+
+    .p2w-keyword:hover {{
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      text-decoration: none;
+    }}
+
+    .controls-section {{
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      padding: 0;
+      background: var(--color-bg-soft);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: 0 8px 18px rgba(26, 26, 26, 0.04);
+    }}
+
+    .controls-container {{
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }}
+
+    .controls-heading {{
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: baseline;
+      margin-bottom: 1rem;
+      font-family: var(--font-ui);
+    }}
+
+    .controls-heading strong {{
+      font-size: 1rem;
+      font-weight: 600;
+    }}
+
+    .controls-heading span {{
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }}
+
     .search-input {{
       width: 100%;
-      max-width: 500px;
-      padding: 0.8rem 1.2rem;
+      padding: 0.9rem 1rem;
       font-size: 1rem;
       font-family: var(--font-ui);
       border: 1px solid var(--color-border);
-      border-radius: 8px;
+      border-radius: 6px;
+      background: var(--color-bg);
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }}
+
     .search-input:focus {{
       border-color: var(--color-accent);
       box-shadow: 0 0 0 3px var(--color-accent-light);
     }}
+
     .filter-group {{
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
-      justify-content: center;
+      margin-top: 1rem;
     }}
+
     .filter-btn {{
       font-family: var(--font-ui);
-      font-size: 0.9rem;
-      padding: 0.4rem 1.2rem;
+      font-size: 0.82rem;
+      padding: 0.35rem 0.85rem;
       border: 1px solid var(--color-border);
       background: var(--color-bg);
       color: var(--color-text-muted);
@@ -267,67 +442,125 @@ def generate_index():
       cursor: pointer;
       transition: all 0.2s;
     }}
-    .filter-btn:hover {{ border-color: var(--color-accent); color: var(--color-accent); }}
+
+    .filter-btn:hover {{
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }}
+
     .filter-btn.active {{
       background: var(--color-accent);
       color: #fff;
       border-color: var(--color-accent);
     }}
 
-    /* 문서 목록 파트 */
-    .papers-section {{ padding: 3rem 0; min-height: 50vh; }}
-    .paper-list {{ display: flex; flex-direction: column; gap: 1rem; }}
-    .paper-card {{
+    .papers-section {{
+      padding: 3rem 0;
+      min-height: 50vh;
+    }}
+
+    .paper-list {{
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 1.5rem;
+      flex-direction: column;
+      gap: 1rem;
+    }}
+
+    .paper-card {{
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      align-items: start;
+      padding: 1.25rem 1.35rem;
       border: 1px solid var(--color-border);
       border-radius: 8px;
       text-decoration: none;
       color: var(--color-text);
-      transition: all 0.2s;
       background: var(--color-bg);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }}
+
     .paper-card:hover {{
       border-color: var(--color-accent);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 22px rgba(26, 26, 26, 0.05);
+      text-decoration: none;
     }}
-    .paper-info {{ flex: 1; }}
-    .paper-info h3 {{ font-size: 1.15rem; margin-bottom: 0.3rem; transition: color 0.2s; }}
-    .paper-tags {{ 
-      font-family: var(--font-ui); 
-      font-size: 0.8rem; 
-      color: var(--color-text-muted); 
+
+    .paper-index {{
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      margin-bottom: 0.35rem;
+    }}
+
+    .paper-info h3 {{
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+    }}
+
+    .paper-card:hover .paper-info h3 {{
+      color: var(--color-accent);
+    }}
+
+    .paper-tags {{
       display: flex;
-      gap: 0.4rem;
       flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.9rem;
     }}
+
     .tag-item {{
-      background: #eee;
-      padding: 0.1rem 0.4rem;
-      border-radius: 3px;
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      color: var(--color-text-muted);
+      background: var(--color-bg);
     }}
-    .paper-card:hover .paper-info h3 {{ color: var(--color-accent); }}
-    
-    /* 동적 언어 뱃지 공통 스타일 */
+
+    .paper-meta {{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.6rem;
+      min-width: 112px;
+    }}
+
     .lang-badge {{
       font-family: var(--font-ui);
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      padding: 0.2rem 0.6rem;
+      padding: 0.18rem 0.55rem;
       border-radius: 4px;
-      text-transform: uppercase;
       background: var(--color-bg-soft);
-      border: 1px solid var(--color-border);
       color: var(--color-text-muted);
-      margin-left: 1rem;
+      border: 1px solid var(--color-border);
+      text-transform: uppercase;
     }}
-    .lang-badge.kr {{ background: #eef3fb; color: #3a6bbf; border: 1px solid #b8cef0; }}
-    .lang-badge.en {{ background: var(--color-positive-bg); color: var(--color-positive); border: 1px solid #b8e0c8; }}
-    
-    /* 페이지네이션 */
+
+    .lang-badge.en {{
+      background: var(--color-positive-bg);
+      color: var(--color-positive);
+      border-color: #b8e0c8;
+    }}
+
+    .paper-link {{
+      display: inline-block;
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      padding: 0.35rem 0.85rem;
+      border: 1px solid var(--color-accent);
+      border-radius: 4px;
+      color: var(--color-accent);
+      transition: background 0.15s, color 0.15s;
+    }}
+
+    .paper-card:hover .paper-link {{
+      background: var(--color-accent);
+      color: #fff;
+    }}
+
     .pagination-container {{
       display: flex;
       justify-content: center;
@@ -335,9 +568,11 @@ def generate_index():
       gap: 0.5rem;
       margin-top: 3rem;
       font-family: var(--font-ui);
+      flex-wrap: wrap;
     }}
+
     .page-btn {{
-      padding: 0.5rem 0.8rem;
+      padding: 0.45rem 0.8rem;
       border: 1px solid var(--color-border);
       background: var(--color-bg);
       border-radius: 6px;
@@ -345,9 +580,22 @@ def generate_index():
       font-weight: 500;
       transition: all 0.2s;
     }}
-    .page-btn:hover:not(:disabled) {{ border-color: var(--color-accent); color: var(--color-accent); }}
-    .page-btn.active {{ background: var(--color-accent); color: white; border-color: var(--color-accent); }}
-    .page-btn:disabled {{ opacity: 0.4; cursor: not-allowed; }}
+
+    .page-btn:hover:not(:disabled) {{
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }}
+
+    .page-btn.active {{
+      background: var(--color-accent);
+      color: white;
+      border-color: var(--color-accent);
+    }}
+
+    .page-btn:disabled {{
+      opacity: 0.4;
+      cursor: not-allowed;
+    }}
 
     .no-results {{
       text-align: center;
@@ -356,6 +604,36 @@ def generate_index():
       font-family: var(--font-ui);
       display: none;
     }}
+
+    @media (max-width: 760px) {{
+      .paper-card {{
+        grid-template-columns: 1fr;
+      }}
+
+      .paper-meta {{
+        align-items: flex-start;
+      }}
+    }}
+
+    @media (max-width: 560px) {{
+      .p2w-content {{
+        padding: 0 1rem;
+      }}
+
+      .controls-heading {{
+        flex-direction: column;
+        align-items: flex-start;
+      }}
+
+      .p2w-hero h1 {{
+        font-size: 2rem;
+      }}
+
+      .controls-container {{
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }}
+    }}
   </style>
 </head>
 <body>
@@ -363,12 +641,18 @@ def generate_index():
   <div class="p2w-hero">
     <div class="p2w-content">
       <h1>Jump2Paper Archive</h1>
-      <p>Explore our formatted academic papers.</p>
+      <div class="archive-stats">
+{stats_html}
+      </div>
     </div>
   </div>
 
   <div class="controls-section">
     <div class="p2w-content controls-container">
+      <div class="controls-heading">
+        <strong>문서 찾기</strong>
+        <span>제목, 키워드, 약어, 언어별 탐색</span>
+      </div>
       <input type="text" id="searchInput" class="search-input" placeholder="Search by title or category (e.g. LLM, RL)..." autocomplete="off">
       <div class="filter-group" id="filterGroup">
         {filters_html}      </div>
@@ -378,43 +662,45 @@ def generate_index():
   <div class="papers-section p2w-content">
     <div class="paper-list" id="papersList">
 """
-    
-    for item in all_files:
-        lang = item['lang']
-        display_name = KNOWN_LANGS.get(lang.lower(), lang.upper())
-        short_label = display_name.split(' (')[0] if ' (' in display_name else display_name
-        
-        # Sanitize attributes for HTML
-        def clean_attr(val):
-            return str(val).replace('\n', ' ').replace('\r', ' ').replace('"', '&quot;').strip()
-            
-        t_attr = clean_attr(item['title'])
-        p1_attr = clean_attr(item['p1'])
-        p2_attr = clean_attr(item['p2'])
-        p3_attr = clean_attr(item['p3'])
-        p4_attr = clean_attr(item['p4'])
 
-        # UI Tags: Only show the HIGHEST priority tags (P1: Manual p2w-keywords)
+    for index, item in enumerate(all_files, start=1):
+        lang = item["lang"]
+        display_name = KNOWN_LANGS.get(lang.lower(), lang.upper())
+        short_label = display_name.split(" (")[0] if " (" in display_name else display_name
+
+        t_attr = clean_attr(item["title"])
+        p1_attr = clean_attr(item["p1"])
+        p2_attr = clean_attr(item["p2"])
+        p3_attr = clean_attr(item["p3"])
+        p4_attr = clean_attr(item["p4"])
+
         tags_html = ""
-        ui_tags = [t.strip() for t in p1_attr.split(',') if t.strip()]
+        ui_tags = [tag.strip() for tag in p1_attr.split(",") if tag.strip()]
         if ui_tags:
-            tags_html = '<div class="paper-tags">' + "".join([f'<span class="tag-item">{t}</span>' for t in ui_tags[:5]]) + '</div>'
-        
+            tag_items = "".join(
+                [f'<span class="tag-item">{tag}</span>' for tag in ui_tags[:5]]
+            )
+            tags_html = f'<div class="paper-tags">{tag_items}</div>'
+
         html_content += f"""
-      <a href="{item['path']}" class="paper-card" data-title="{t_attr}" data-lang="{lang}" data-p1="{p1_attr}" data-p2="{p2_attr}" data-p3="{p3_attr}" data-p4="{p4_attr}">
+      <a href="{item["path"]}" class="paper-card" data-title="{t_attr}" data-lang="{lang}" data-p1="{p1_attr}" data-p2="{p2_attr}" data-p3="{p3_attr}" data-p4="{p4_attr}">
         <div class="paper-info">
-          <h3>{item['title']}</h3>
+          <div class="paper-index">문서 {index:03d}</div>
+          <h3>{item["title"]}</h3>
           {tags_html}
         </div>
-        <div class="lang-badge {lang}">{short_label}</div>
+        <div class="paper-meta">
+          <div class="lang-badge {lang}">{short_label}</div>
+          <div class="paper-link">읽기 →</div>
+        </div>
       </a>"""
-            
+
     html_content += """
     </div>
     <div id="noResults" class="no-results">
       No papers found matching your criteria.
     </div>
-    
+
     <div class="pagination-container" id="paginationControls">
       <!-- Dynamic Pagination Buttons -->
     </div>
@@ -426,13 +712,12 @@ def generate_index():
     const cards = Array.from(document.querySelectorAll('.paper-card'));
     const noResults = document.getElementById('noResults');
     const paginationControls = document.getElementById('paginationControls');
-    
+
     let currentLang = 'all';
     let currentSearch = '';
     let currentPage = 1;
     const pageSize = 10;
-    
-    // Prepare data for Fuse.js
+
     const paperData = cards.map(card => ({
       el: card,
       title: card.getAttribute('data-title'),
@@ -445,37 +730,32 @@ def generate_index():
 
     const fuse = new Fuse(paperData, {
       keys: [
-        { name: 'title', weight: 2.0 }, // Absolute Top Priority
-        { name: 'p1', weight: 0.8 },    // Manual Keywords (Priority 1)
-        { name: 'p2', weight: 0.5 },    // Auto-extracted (Priority 2)
-        { name: 'p3', weight: 0.2 },    // Synonyms (Priority 3)
-        { name: 'p4', weight: 0.1 }     // Acronyms (Priority 4)
+        { name: 'title', weight: 2.0 },
+        { name: 'p1', weight: 0.8 },
+        { name: 'p2', weight: 0.5 },
+        { name: 'p3', weight: 0.2 },
+        { name: 'p4', weight: 0.1 }
       ],
-      threshold: 0.3, // Fuzzy threshold
+      threshold: 0.3,
       ignoreLocation: true
     });
 
     function updateView() {
-      // 1. Filtering & Searching
       let results = [];
-      
-      // First, filter by language
-      const langFiltered = paperData.filter(item => 
+
+      const langFiltered = paperData.filter(item =>
         currentLang === 'all' || item.lang === currentLang
       );
 
       if (currentSearch) {
-        // Search within the language-filtered results
         const searchResults = fuse.search(currentSearch);
-        // Only include those that are in our lang-filtered list
         results = searchResults
-          .filter(r => langFiltered.includes(r.item))
-          .map(r => r.item);
+          .filter(result => langFiltered.includes(result.item))
+          .map(result => result.item);
       } else {
         results = langFiltered;
       }
 
-      // 2. Pagination
       const totalItems = results.length;
       const totalPages = Math.ceil(totalItems / pageSize);
       if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
@@ -484,12 +764,8 @@ def generate_index():
       const end = start + pageSize;
       const paginatedItems = results.slice(start, end);
 
-      // 3. Render
-      // Hide everything first
       paperData.forEach(item => item.el.style.display = 'none');
-      
-      // Show matched & paginated items
-      paginatedItems.forEach(item => item.el.style.display = 'flex');
+      paginatedItems.forEach(item => item.el.style.display = 'grid');
 
       noResults.style.display = totalItems === 0 ? 'block' : 'none';
       renderPaginationButtons(totalPages);
@@ -512,57 +788,66 @@ def generate_index():
         return btn;
       };
 
-      // Prev Button
-      paginationControls.appendChild(createBtn('Prev', currentPage - 1, false, currentPage === 1));
+      paginationControls.appendChild(
+        createBtn('Prev', currentPage - 1, false, currentPage === 1)
+      );
 
-      // Page Numbers (Simple version)
-      for (let i = 1; i <= totalPages; i++) {
+      for (let page = 1; page <= totalPages; page++) {
         if (totalPages > 7) {
-          // Add some ellipsis logic if there are too many pages
-          if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-             paginationControls.appendChild(createBtn(i, i, i === currentPage));
-          } else if (i === currentPage - 2 || i === currentPage + 2) {
-             const dot = document.createElement('span');
-             dot.innerText = '...';
-             paginationControls.appendChild(dot);
+          if (
+            page === 1 ||
+            page === totalPages ||
+            (page >= currentPage - 1 && page <= currentPage + 1)
+          ) {
+            paginationControls.appendChild(
+              createBtn(page, page, page === currentPage)
+            );
+          } else if (page === currentPage - 2 || page === currentPage + 2) {
+            const dot = document.createElement('span');
+            dot.innerText = '...';
+            paginationControls.appendChild(dot);
           }
         } else {
-          paginationControls.appendChild(createBtn(i, i, i === currentPage));
+          paginationControls.appendChild(createBtn(page, page, page === currentPage));
         }
       }
 
-      // Next Button
-      paginationControls.appendChild(createBtn('Next', currentPage + 1, false, currentPage === totalPages));
+      paginationControls.appendChild(
+        createBtn('Next', currentPage + 1, false, currentPage === totalPages)
+      );
     }
 
-    searchInput.addEventListener('input', (e) => {
-      currentSearch = e.target.value.toLowerCase().trim();
-      currentPage = 1; // Reset to first page
+    searchInput.addEventListener('input', event => {
+      currentSearch = event.target.value.toLowerCase().trim();
+      currentPage = 1;
       updateView();
     });
 
     filterBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        currentLang = e.target.getAttribute('data-lang');
-        currentPage = 1; // Reset to first page
+      btn.addEventListener('click', event => {
+        filterBtns.forEach(filterBtn => filterBtn.classList.remove('active'));
+        event.target.classList.add('active');
+        currentLang = event.target.getAttribute('data-lang');
+        currentPage = 1;
         updateView();
       });
     });
 
-    // Initial View
     updateView();
   </script>
 </body>
 </html>
 """
 
-    index_path = os.path.join(base_dir, 'index.html')
-    with open(index_path, 'w', encoding='utf-8') as f:
-        f.write(html_content)
-        
-    print(f"✅ Successfully created {index_path} with {len(all_files)} papers across {len(active_langs)} languages.")
+    index_path = os.path.join(base_dir, "index.html")
+    with open(index_path, "w", encoding="utf-8") as file:
+        file.write(html_content)
+
+    print(
+        f"Successfully created {index_path} with {len(all_files)} papers across "
+        f"{len(active_langs)} languages."
+    )
+
 
 if __name__ == "__main__":
     generate_index()
